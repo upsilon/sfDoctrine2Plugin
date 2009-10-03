@@ -1,0 +1,25 @@
+# sfDoctrinePlugin 2.0
+
+Sample `databases.yml` for MySQL:
+
+    [yml]
+    all:
+      doctrine:
+        class: sfDoctrineDatabase
+        param:
+          options:
+            driver: pdo_mysql
+            user: root
+            password:
+            dbname: doctrine2
+
+Sample `databases.yml` for Sqlite:
+
+    [yml]
+    all:
+      doctrine:
+        class: sfDoctrineDatabase
+        param:
+          options:
+            driver: pdo_sqlite
+            path: %SF_DATA_DIR%/database.sqlite

@@ -1,0 +1,2 @@
+DoctrineExtensions\ActiveEntity:
+  type: mappedSuperclass
