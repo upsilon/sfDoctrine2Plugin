@@ -1,6 +1,7 @@
 Models\User:
   type: entity
   table: user
+  repositoryClass: UserRepository
   id:
     id:
       type: integer

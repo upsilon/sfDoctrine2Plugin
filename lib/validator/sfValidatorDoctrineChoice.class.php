@@ -89,7 +89,7 @@ class sfValidatorDoctrineChoice extends sfValidatorBase
       {
         $qb = $this->em->createQueryBuilder()->select('a')->from($this->getOption('model'), 'a');
       }
-      $qb->andWhereIn('a.'.$this->getColumn(), $value);
+      $qb->andWhere($qb->expr()->in('a.'.$this->getColumn(), $value));
 			$query = $qb->getQuery();
 			$results = $query->execute();
       if (count($results) != count($value))

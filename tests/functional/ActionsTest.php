@@ -27,7 +27,7 @@ $checkInfo = array(
 
 $b->
   get('/users')->
-  click('Jonathan Wage (jwage)')->
+  click('jwage')->
   click('Save', $info)->
 	with('form')->begin()->
 		hasErrors(false)->
@@ -60,7 +60,8 @@ $checkInfo = array(
 );
 
 $b->
-	click('New User')->
+  click('Back to list')->
+	click('New')->
 	  click('Save', $info)->
 		with('form')->begin()->
 			hasErrors(false)->

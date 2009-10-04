@@ -2,9 +2,10 @@
 
 namespace Models;
 
-use DoctrineExtensions\ActiveEntity;
+use DoctrineExtensions\ActiveEntity,
+    sfDoctrineActiveEntity;
 
-class Group extends ActiveEntity
+class Group extends sfDoctrineActiveEntity
 {
   protected $id;
   protected $name;

@@ -1,3 +1,30 @@
+models\user_users:
+  class: sfDoctrineRouteCollection
+  options:
+    model:                Models\User
+    module:               users
+    prefix_path:          users
+    column:               id
+    with_wildcard_routes: true
+
+models\profile_profiles:
+  class: sfDoctrineRouteCollection
+  options:
+    model:                Models\Profile
+    module:               profiles
+    prefix_path:          profiles
+    column:               id
+    with_wildcard_routes: true
+
+models\user_users_admin_gen:
+  class: sfDoctrineRouteCollection
+  options:
+    model:                Models\User
+    module:               users_admin_gen
+    prefix_path:          users_admin_gen
+    column:               id
+    with_wildcard_routes: true
+
 # default rules
 homepage:
   url:   /
@@ -10,7 +37,11 @@ users:
 edit_user:
   url:   /users/:id/edit
   param: { module: users, action: edit_user }
-
+  class: sfDoctrineRoute
+  options: { model: Models\User, type: object, method_for_query: getEditUser }
+  requirements:
+    sf_method: [post, get]
+  
 new_user:
   url:   /users/new
   param: { module: users, action: new_user }

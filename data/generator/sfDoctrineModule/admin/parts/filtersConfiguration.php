@@ -2,7 +2,7 @@
   {
     $class = $this->getFilterFormClass();
 
-    return new $class($filters, $this->getFilterFormOptions());
+    return new $class($this->em, $filters, $this->getFilterFormOptions());
   }
 
   public function getFilterFormOptions()

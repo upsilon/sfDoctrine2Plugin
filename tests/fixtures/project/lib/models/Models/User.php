@@ -2,9 +2,10 @@
 
 namespace Models;
 
-use DoctrineExtensions\ActiveEntity;
+use DoctrineExtensions\ActiveEntity,
+    sfDoctrineActiveEntity;
 
-class User extends ActiveEntity
+class User extends sfDoctrineActiveEntity
 {
   protected $id;
   protected $isActive;

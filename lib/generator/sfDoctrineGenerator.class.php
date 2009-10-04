@@ -19,7 +19,7 @@
 class sfDoctrineGenerator extends sfModelGenerator
 {
   protected
-    $table = null;
+    $databaseManager = null;
 
   /**
    * Initializes the current sfGenerator instance.
@@ -29,7 +29,7 @@ class sfDoctrineGenerator extends sfModelGenerator
   public function initialize(sfGeneratorManager $generatorManager)
   {
     parent::initialize($generatorManager);
-
+		$this->databaseManager = sfContext::getInstance()->getDatabaseManager();
     $this->setGeneratorClass('sfDoctrineModule');
   }
 
@@ -38,10 +38,11 @@ class sfDoctrineGenerator extends sfModelGenerator
     $names = $this->databaseManager->getNames();
     foreach ($names as $name)
     {
-      $em = $databaseManager->getDatabase($name)->getEntityManager();
-      if ($em->hasMetadataFor($model))
+      $em = $this->databaseManager->getDatabase($name)->getEntityManager();
+			$cmf = $em->getMetadataFactory();
+      if ($cmf->hasMetadataFor($model))
       {
-        return $em->getMetadataFor($model);
+        return $cmf->getMetadataFor($model);
       }
     }
     return false;
@@ -53,10 +54,16 @@ class sfDoctrineGenerator extends sfModelGenerator
   public function configure()
   {
     $this->metadata = $this->getMetadataFor($this->modelClass);
+		$this->formName = str_replace('\\', '', $this->metadata->name);
 
     // load all primary keys
     $this->loadPrimaryKeys();
   }
+
+	public function getFormName()
+	{
+		return $this->formName;
+	}
 
   /**
    * Returns an array of tables that represents a many to many relationship.
@@ -65,18 +72,19 @@ class sfDoctrineGenerator extends sfModelGenerator
    *
    * @return array An array of tables.
    */
-  public function getManyToManyTables()
-  {
-    $relations = array();
-    foreach ($this->table->getRelations() as $relation)
-    {
-      if ($relation->getType() === Doctrine_Relation::MANY && isset($relation['refTable']))
-      {
-        $relations[] = $relation;
-      }
-    }
-    return $relations;
-  }
+	 public function getManyToManyTables()
+	 {
+	   $relations = array();
+	   foreach ($this->metadata->associationMappings as $associationMapping)
+	   {
+	     if ($associationMapping instanceof \Doctrine\ORM\Mapping\ManyToManyAssociation)
+	     {
+	       $relations[] = $association;
+	     }
+	   }
+
+	   return $relations;
+	 }
 
   /**
    * Loads primary keys.
@@ -174,7 +182,7 @@ class sfDoctrineGenerator extends sfModelGenerator
 
     foreach ($this->getManyToManyTables() as $tables)
     {
-      $name = sfInflector::underscore($tables['alias']).'_list';
+      $name = $this->underscore($tables['alias']).'_list';
       $names[] = $name;
       $fields[$name] = array_merge(array(
         'is_link'      => false,
@@ -229,7 +237,7 @@ class sfDoctrineGenerator extends sfModelGenerator
 
     foreach ($this->getManyToManyTables() as $tables)
     {
-      $name = sfInflector::underscore($tables['alias']).'_list';
+      $name = $this->underscore($tables['alias']).'_list';
       $names[] = $name;
       $fields[$name] = isset($this->config[$context]['fields'][$name]) ? $this->config[$context]['fields'][$name] : array();
     }
@@ -271,7 +279,7 @@ class sfDoctrineGenerator extends sfModelGenerator
     {
       foreach ($this->getManyToManyTables() as $tables)
       {
-        $names[] = sfInflector::underscore($tables['alias']).'_list';
+        $names[] = $this->underscore($tables['alias']).'_list';
       }
     }
 
@@ -279,18 +287,28 @@ class sfDoctrineGenerator extends sfModelGenerator
   }
 
   /**
-   * Get array of sfDoctrineAdminColumn objects
+   * Get array of sfDoctrineColumn objects
    *
    * @return array $columns
    */
   public function getColumns()
   {
-    foreach (array_keys($this->table->getColumns()) as $name)
+    $columns = array();
+    foreach ($this->metadata->fieldMappings as $name => $fieldMapping)
     {
-      $name = $this->table->getFieldName($name);
-      $columns[$name] = new sfDoctrineColumn($name, $this->table);
+			if ($this->metadata->versionField == $fieldMapping['fieldName'])
+			{
+				continue;
+			}
+      $columns[$name] = new sfDoctrineColumn($name, $fieldMapping, $this->metadata, $this);
     }
 
     return $columns;
   }
+
+	public function underscore($name)
+	{
+		$name = str_replace('\\', '_', $name);
+		return sfInflector::underscore($name);
+	}
 }

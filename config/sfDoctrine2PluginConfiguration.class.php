@@ -21,6 +21,13 @@ class sfDoctrine2PluginConfiguration extends sfPluginConfiguration
 {
   public function initialize()
   {
+	  sfConfig::set('sf_orm', 'doctrine');
+
+    if (!sfConfig::get('sf_admin_module_web_dir'))
+    {
+      sfConfig::set('sf_admin_module_web_dir', '/sfDoctrine2Plugin');
+    }
+
     require_once __DIR__.'/../lib/vendor/doctrine/Doctrine/Common/IsolatedClassLoader.php';
 
     $classLoader = new \Doctrine\Common\IsolatedClassLoader('DoctrineExtensions');
@@ -66,7 +73,41 @@ class sfDoctrine2PluginConfiguration extends sfPluginConfiguration
       $event->setReturnValue($database->getEntityManager());
 
       return true;
-    } else {
+		}
+		else if ($method == 'getEntityManagerFor')
+		{
+			$databaseManager = $actions->getContext()->getDatabaseManager();
+      $names = $databaseManager->getNames();
+			foreach ($names as $name)
+			{
+				$em = $databaseManager->getDatabase($name)->getEntityManager();
+				$cmf = $em->getMetadataFactory();
+				if ($cmf->hasMetadataFor($args[0]))
+				{
+					$event->setReturnValue($em);
+					return true;
+				}
+			}
+			return false;
+    }
+		else if ($method == 'getMetadataFor')
+		{
+			$databaseManager = $actions->getContext()->getDatabaseManager();
+      $names = $databaseManager->getNames();
+			foreach ($names as $name)
+			{
+				$em = $databaseManager->getDatabase($name)->getEntityManager();
+				$cmf = $em->getMetadataFactory();
+				if ($cmf->hasMetadataFor($args[0]))
+				{
+					$event->setReturnValue($cmf->getMetadataFor($args[0]));
+					return true;
+				}
+			}
+			return false;
+		}
+		else
+		{
       return false;
     }
   }

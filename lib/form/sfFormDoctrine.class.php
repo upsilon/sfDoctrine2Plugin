@@ -425,6 +425,8 @@ abstract class sfFormDoctrine extends sfFormObject
 
     // embedded forms
     $this->saveEmbeddedForms($em);
+
+    $em->flush();
   }
 
   /**

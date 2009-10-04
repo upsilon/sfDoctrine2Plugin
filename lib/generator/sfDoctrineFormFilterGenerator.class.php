@@ -176,7 +176,8 @@ class sfDoctrineFormFilterGenerator extends sfDoctrineFormGenerator
   {
     $options = array();
 
-    $withEmpty = $column->isNotNull() && !$column->isForeignKey() ? array("'with_empty' => false") : array();
+		$isForeignKey = $column->isForeignKey();
+    $withEmpty = $column->isNotNull() && !$isForeignKey ? array("'with_empty' => false") : array();
     switch ($column->getDoctrineType())
     {
       case 'boolean':
@@ -203,7 +204,7 @@ class sfDoctrineFormFilterGenerator extends sfDoctrineFormGenerator
       $options[] = sprintf('\'model\' => \'%s\', \'add_empty\' => true', $column->getForeignMetadata()->name);
     }
 
-    return count($options) ? sprintf('array(%s)', implode(', ', $options)) : '';
+    return ($isForeignKey ? '$this->em, ' : '').(count($options) ? sprintf('array(%s)', implode(', ', $options)) : 'array()');
   }
 
   /**
@@ -255,10 +256,11 @@ class sfDoctrineFormFilterGenerator extends sfDoctrineFormGenerator
   public function getValidatorOptionsForColumn($column)
   {
     $options = array('\'required\' => false');
-
-    if ($column->isForeignKey())
+		$isForeignKey = $column->isForeignKey();
+		$requiresEm = ($isForeignKey || $column->isPrimaryKey());
+    if ($isForeignKey)
     {
-      foreach ($column->getForeignMetadata()->fieldMappings as $name => $fieldMapping)
+  		foreach ($column->getForeignMetadata()->fieldMappings as $name => $fieldMapping)
       {
         if (isset($fieldMapping['id']) && $fieldMapping['id'])
         {
@@ -293,7 +295,7 @@ class sfDoctrineFormFilterGenerator extends sfDoctrineFormGenerator
       }
     }
 
-    return count($options) ? sprintf('array(%s)', implode(', ', $options)) : '';
+    return ($requiresEm ? '$this->em, ' : '').(count($options) ? sprintf('array(%s)', implode(', ', $options)) : '');
   }
 
   public function getValidatorForColumn($column)

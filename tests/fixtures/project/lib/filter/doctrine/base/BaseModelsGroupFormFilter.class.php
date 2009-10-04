@@ -13,7 +13,7 @@ class BaseModelsGroupFormFilter extends BaseFormFilterDoctrine
   public function setup()
   {
     $this->setWidgets(array(
-      'name' => new sfWidgetFormFilterInput(),
+      'name' => new sfWidgetFormFilterInput(array()),
     ));
 
     $this->setValidators(array(
@@ -37,8 +37,8 @@ class BaseModelsGroupFormFilter extends BaseFormFilterDoctrine
   public function getFields()
   {
     return array(
-      'name' => 'Text',
       'id'   => 'Number',
+      'name' => 'Text',
     );
   }
 }

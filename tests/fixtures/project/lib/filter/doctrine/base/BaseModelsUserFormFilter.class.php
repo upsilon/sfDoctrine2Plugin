@@ -14,8 +14,8 @@ class BaseModelsUserFormFilter extends BaseFormFilterDoctrine
   {
     $this->setWidgets(array(
       'isActive' => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
-      'username' => new sfWidgetFormFilterInput(),
-      'password' => new sfWidgetFormFilterInput(),
+      'username' => new sfWidgetFormFilterInput(array()),
+      'password' => new sfWidgetFormFilterInput(array()),
     ));
 
     $this->setValidators(array(
@@ -41,10 +41,10 @@ class BaseModelsUserFormFilter extends BaseFormFilterDoctrine
   public function getFields()
   {
     return array(
+      'id'       => 'Number',
       'isActive' => 'Boolean',
       'username' => 'Text',
       'password' => 'Text',
-      'id'       => 'Number',
     );
   }
 }

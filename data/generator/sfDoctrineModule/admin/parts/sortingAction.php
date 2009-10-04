@@ -5,7 +5,7 @@
       return;
     }
 
-    $query->addOrderBy($sort[0] . ' ' . $sort[1]);
+    $query->addOrderBy($query->getRootAlias().'.'.$sort[0], $sort[1]);
   }
 
   protected function getSort()
@@ -32,5 +32,5 @@
 
   protected function isValidSortColumn($column)
   {
-    return Doctrine::getTable('<?php echo $this->getModelClass() ?>')->hasColumn($column);
+    return $this->getMetadataFor('<?php echo $this->getModelClass() ?>')->hasField($column);
   }

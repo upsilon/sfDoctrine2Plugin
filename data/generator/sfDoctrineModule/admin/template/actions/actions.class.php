@@ -16,6 +16,7 @@ class <?php echo $this->getGeneratedModuleName() ?>Actions extends sfActions
   public function preExecute()
   {
     $this->configuration = new <?php echo $this->getModuleName() ?>GeneratorConfiguration();
+		$this->configuration->setEntityManager($this->getEntityManagerFor('<?php echo $this->getModelClass() ?>'));
 
     if (!$this->getUser()->hasCredential($this->configuration->getCredentials($this->getActionName())))
     {

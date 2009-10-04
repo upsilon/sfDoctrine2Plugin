@@ -21,9 +21,21 @@ class Base<?php echo ucfirst($this->getModuleName()) ?>GeneratorConfiguration ex
    */
   public function getFormClass()
   {
-    return '<?php echo isset($this->config['form']['class']) ? $this->config['form']['class'] : $this->getModelClass().'Form' ?>';
+    return '<?php echo isset($this->config['form']['class']) ? $this->config['form']['class'] : $this->getFormName().'Form' ?>';
 <?php unset($this->config['form']['class']) ?>
   }
+
+  public function getForm($object = null)
+  {
+    $class = $this->getFormClass();
+
+    return new $class($this->em, $object, $this->getFormOptions());
+  }
+
+	public function setEntityManager($em)
+	{
+		$this->em = $em;
+	}
 
   public function hasFilterForm()
   {
@@ -37,7 +49,7 @@ class Base<?php echo ucfirst($this->getModuleName()) ?>GeneratorConfiguration ex
    */
   public function getFilterFormClass()
   {
-    return '<?php echo isset($this->config['filter']['class']) && !in_array($this->config['filter']['class'], array(null, true, false), true) ? $this->config['filter']['class'] : $this->getModelClass().'FormFilter' ?>';
+    return '<?php echo isset($this->config['filter']['class']) && !in_array($this->config['filter']['class'], array(null, true, false), true) ? $this->config['filter']['class'] : str_replace('\\', '', $this->getModelClass()).'FormFilter' ?>';
 <?php unset($this->config['filter']['class']) ?>
   }
 
@@ -47,15 +59,15 @@ class Base<?php echo ucfirst($this->getModuleName()) ?>GeneratorConfiguration ex
 
 <?php include dirname(__FILE__).'/sortingConfiguration.php' ?>
 
-  public function getTableMethod()
+  public function getRepositoryMethod()
   {
-    return '<?php echo isset($this->config['list']['table_method']) ? $this->config['list']['table_method'] : null ?>';
-<?php unset($this->config['list']['table_method']) ?>
+    return '<?php echo isset($this->config['list']['repository_method']) ? $this->config['list']['repository_method'] : null ?>';
+<?php unset($this->config['list']['repository_method']) ?>
   }
 
-  public function getTableCountMethod()
+  public function getRepositoryCountMethod()
   {
-    return '<?php echo isset($this->config['list']['table_count_method']) ? $this->config['list']['table_count_method'] : null ?>';
-<?php unset($this->config['list']['table_count_method']) ?>
+    return '<?php echo isset($this->config['list']['repository_count_method']) ? $this->config['list']['repository_count_method'] : null ?>';
+<?php unset($this->config['list']['repository_count_method']) ?>
   }
 }

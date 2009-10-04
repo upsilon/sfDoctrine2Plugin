@@ -74,7 +74,8 @@ class sfTesterDoctrine extends sfTester
           $operator = 'LIKE';
         }
 
-        $qb->andWhere('a.' . $field . ' ' . $operator . " '".$condition."'");
+        $qb->andWhere('a.'.$field.' '.$operator .' :'.$field);
+				$qb->setParameter($field, $condition);
       }
     }
 

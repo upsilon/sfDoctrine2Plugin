@@ -26,7 +26,7 @@
       $this->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
     }
 
-    $validator = new sfValidatorDoctrineChoice(array('multiple' => true, 'model' => '<?php echo $this->getModelClass() ?>'));
+    $validator = new sfValidatorDoctrineChoice($this->getEntityManagerFor('<?php echo $this->getModelClass() ?>'), array('multiple' => true, 'model' => '<?php echo $this->getModelClass() ?>'));
     try
     {
       // validate ids
@@ -45,12 +45,16 @@
 
   protected function executeBatchDelete(sfWebRequest $request)
   {
+		$em = $this->getEntityManagerFor('<?php echo $this->getModelClass() ?>');
     $ids = $request->getParameter('ids');
 
-    $records = Doctrine_Query::create()
-      ->from('<?php echo $this->getModelClass() ?>')
-      ->whereIn('<?php echo $this->getPrimaryKeys(true) ?>', $ids)
-      ->execute();
+		$qb = $em->createQueryBuilder();
+    $records = $qb
+			->select('a')
+      ->from('<?php echo $this->getModelClass() ?>', 'a')
+      ->where($qb->expr()->in('a.<?php echo $this->getPrimaryKeys(true) ?>', $ids))
+      ->getQuery()
+			->execute();
 
     foreach ($records as $record)
     {

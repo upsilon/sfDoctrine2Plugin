@@ -1,6 +1,6 @@
   protected function getPager()
   {
-    $pager = $this->configuration->getPager('<?php echo $this->getModelClass() ?>');
+    $pager = $this->configuration->getPager($this->getEntityManagerFor('<?php echo $this->getModelClass() ?>'), '<?php echo $this->getModelClass() ?>');
     $pager->setQuery($this->buildQuery());
     $pager->setPage($this->getPage());
     $pager->init();
@@ -20,14 +20,14 @@
 
   protected function buildQuery()
   {
-    $tableMethod = $this->configuration->getTableMethod();
+    $repositoryMethod = $this->configuration->getRepositoryMethod();
 <?php if ($this->configuration->hasFilterForm()): ?>
     if (is_null($this->filters))
     {
       $this->filters = $this->configuration->getFilterForm($this->getFilters());
     }
 
-    $this->filters->setTableMethod($tableMethod);
+    $this->filters->setRepositoryMethod($repositoryMethod);
 
     $query = $this->filters->buildQuery($this->getFilters());
 <?php else: ?>

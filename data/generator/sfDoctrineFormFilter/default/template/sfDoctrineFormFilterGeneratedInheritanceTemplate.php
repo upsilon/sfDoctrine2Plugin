@@ -23,7 +23,7 @@ class Base<?php echo $this->formName ?>FormFilter extends <?php echo $this->getF
   }
 
 <?php foreach ($this->getManyToManyRelations() as $relation): ?>
-  public function add<?php echo sfInflector::camelize($relation['alias']) ?>ListColumnQuery(Doctrine_Query $query, $field, $values)
+  public function add<?php echo sfInflector::camelize($relation['alias']) ?>ListColumnQuery($query, $field, $values)
   {
     if (!is_array($values))
     {

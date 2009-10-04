@@ -1,8 +1,8 @@
-  public function getPager($model)
+  public function getPager($em, $model)
   {
     $class = $this->getPagerClass();
 
-    return new $class($model, $this->getPagerMaxPerPage());
+    return new $class($em, $model, $this->getPagerMaxPerPage());
   }
 
   public function getPagerClass()

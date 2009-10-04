@@ -13,17 +13,17 @@ class BaseModelsUserForm extends BaseFormDoctrine
   public function setup()
   {
     $this->setWidgets(array(
+      'id'       => new sfWidgetFormInputHidden(array()),
       'isActive' => new sfWidgetFormInputCheckbox(array()),
       'username' => new sfWidgetFormInputText(array()),
       'password' => new sfWidgetFormInputText(array()),
-      'id'       => new sfWidgetFormInputHidden(array()),
     ));
 
     $this->setValidators(array(
+      'id'       => new sfValidatorDoctrineChoice($this->em, array('model' => 'Models\User', 'column' => '', 'required' => false)),
       'isActive' => new sfValidatorBoolean(array('required' => false)),
       'username' => new sfValidatorString(array('max_length' => 255, 'required' => false)),
       'password' => new sfValidatorString(array('max_length' => 255, 'required' => false)),
-      'id'       => new sfValidatorDoctrineChoice($this->em, array('model' => 'Models\User', 'column' => '', 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('models_user[%s]');

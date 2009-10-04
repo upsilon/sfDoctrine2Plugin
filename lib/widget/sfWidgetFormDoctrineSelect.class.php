@@ -80,20 +80,21 @@ class sfWidgetFormDoctrineSelect extends sfWidgetFormSelect
     }
 
     $a = $this->getOption('alias');
-    $q = null === $this->getOption('query')
-        ? Doctrine::getTable($this->getOption('model'))->createQuery($a)
+    $qb = null === $this->getOption('query')
+        ? $this->em->createQueryBuilder()->from($this->getOption('model')), $a)
         : $this->getOption('query');
 
     if ($order = $this->getOption('order_by'))
     {
-      $q->orderBy("$a." . $order[0] . ' ' . $order[1]);
+      $qb->orderBy("$a." . $order[0] . ' ' . $order[1]);
     }
 
+		$q = $qb->getQuery();
     $objects = $q->execute();
     $method = $this->getOption('method');
     foreach ($objects as $object)
     {
-        $choices[is_array($value = $object->getPrimaryKey()) ? current($value) : $value] = $object->$method();
+        $choices[is_array($value = $object->getIdentifier()) ? current($value) : $value] = $object->$method();
     }
 
     return $choices;

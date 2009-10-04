@@ -13,13 +13,13 @@ class BaseModelsGroupForm extends BaseFormDoctrine
   public function setup()
   {
     $this->setWidgets(array(
-      'name' => new sfWidgetFormInputText(array()),
       'id'   => new sfWidgetFormInputHidden(array()),
+      'name' => new sfWidgetFormInputText(array()),
     ));
 
     $this->setValidators(array(
-      'name' => new sfValidatorString(array('max_length' => 255, 'required' => false)),
       'id'   => new sfValidatorDoctrineChoice($this->em, array('model' => 'Models\Group', 'column' => '', 'required' => false)),
+      'name' => new sfValidatorString(array('max_length' => 255, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('models_group[%s]');

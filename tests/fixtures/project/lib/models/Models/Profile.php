@@ -2,9 +2,10 @@
 
 namespace Models;
 
-use DoctrineExtensions\ActiveEntity;
+use DoctrineExtensions\ActiveEntity,
+    sfDoctrineActiveEntity;
 
-class Profile extends ActiveEntity
+class Profile extends sfDoctrineActiveEntity
 {
   protected $id;
   protected $firstName;
