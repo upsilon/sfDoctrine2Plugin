@@ -28,6 +28,14 @@ class sfDoctrine2PluginConfiguration extends sfPluginConfiguration
       sfConfig::set('sf_admin_module_web_dir', '/sfDoctrine2Plugin');
     }
 
+
+    if (sfConfig::get('sf_web_debug'))
+    {
+      require_once __DIR__.'/../lib/debug/sfWebDebugPanelDoctrine.class.php';
+
+      $this->dispatcher->connect('debug.web.load_panels', array('sfWebDebugPanelDoctrine', 'listenToAddPanelEvent'));
+    }
+
     require_once __DIR__.'/../lib/vendor/doctrine/Doctrine/Common/IsolatedClassLoader.php';
 
     $classLoader = new \Doctrine\Common\IsolatedClassLoader('DoctrineExtensions');

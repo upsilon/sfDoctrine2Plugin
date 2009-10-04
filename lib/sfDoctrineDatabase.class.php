@@ -58,6 +58,13 @@ class sfDoctrineDatabase extends sfDatabase
 
     $config->setMetadataDriverImpl(new YamlDriver($paths, YamlDriver::PRELOAD));
 
+    $configuration = sfProjectConfiguration::getActive();
+
+    if (sfConfig::get('sf_debug'))
+    {
+      $config->setSqlLogger(new sfDoctrineSqlLogger($configuration->getEventDispatcher()));
+    }
+
     $method = sprintf('configureDoctrineConnection%s', $connectionName);
     $methodExists = method_exists($configuration, $method);
 
