@@ -1,0 +1,16 @@
+# default rules
+homepage:
+  url:   /
+  param: { module: users, action: index }
+
+users:
+  url:   /users
+  param: { module: users, action: index }
+
+edit_user:
+  url:   /users/:id/edit
+  param: { module: users, action: edit_user }
+
+new_user:
+  url:   /users/new
+  param: { module: users, action: new_user }

@@ -28,8 +28,10 @@ class sfDoctrineDatabase extends sfDatabase
   {
     parent::initialize($parameters);
 
+    $schema = $this->getParameter('schema');
     $connectionName = $this->getParameter('name');
     $connectionOptions = $this->getParameter('options');
+    $plugins = (array) $this->getParameter('plugins');
 
     $config = new \Doctrine\ORM\Configuration();
     $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
@@ -37,24 +39,31 @@ class sfDoctrineDatabase extends sfDatabase
     $configuration = sfProjectConfiguration::getActive();
 
     $paths = array();
-    $paths[] = sfConfig::get('sf_config_dir').'/doctrine';
-    $plugins = $configuration->getPlugins();
+    if ($schema)
+    {
+      $paths[] = $schema;
+    }
+
+    $enabledPlugins = $configuration->getPlugins();
     foreach ($configuration->getAllPluginPaths() as $plugin => $path)
     {
-      if (!in_array($plugin, $plugins))
+      if (!in_array($plugin, $enabledPlugins) || !in_array($plugin, $plugins))
       {
         continue;
       }
       $paths[] = $path.'/config/doctrine';
     }
+    $paths[] = realpath(__DIR__.'/../config/doctrine');
+    $paths = array_unique($paths);
+
     $config->setMetadataDriverImpl(new YamlDriver($paths, YamlDriver::PRELOAD));
 
-    $method = sprintf('configureDoctrineEntityManager%s', $connectionName);
+    $method = sprintf('configureDoctrineConnection%s', $connectionName);
     $methodExists = method_exists($configuration, $method);
 
     if (method_exists($configuration, 'configureDoctrineConnection') && !$methodExists)
     {
-      $configuration->configureDoctrineEntityManager($config);
+      $configuration->configureDoctrineConnection($config);
     } else if ($methodExists) {
       $configuration->$method($config);
     }

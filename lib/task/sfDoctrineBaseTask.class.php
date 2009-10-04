@@ -77,7 +77,7 @@ abstract class sfDoctrineBaseTask extends sfBaseTask
       }
       $database = $this->databaseManager->getDatabase($name);
     } else {
-      $database = $this->databaseManager->getDatabase($names[0]);
+      $database = $this->databaseManager->getDatabase(end($names));
     }
 
     return $database->getEntityManager();

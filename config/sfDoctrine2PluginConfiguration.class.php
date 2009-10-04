@@ -60,7 +60,7 @@ class sfDoctrine2PluginConfiguration extends sfPluginConfiguration
         }
         $database = $databaseManager->getDatabase($args[0]);
       } else {
-        $database = $databaseManager->getDatabase($names[0]);
+        $database = $databaseManager->getDatabase(end($names));
       }
 
       $event->setReturnValue($database->getEntityManager());

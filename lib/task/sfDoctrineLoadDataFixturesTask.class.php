@@ -80,12 +80,16 @@ EOF;
       foreach ($entityManagers as $name => $classes)
       {
         $em = $this->databaseManager->getDatabase($name)->getEntityManager();
+        $cmf = $em->getMetadataFactory();
         $classes = $this->getCommitOrder($em, $classes);
         for ($i = count($classes) - 1; $i >= 0; --$i)
         {
           $class = $classes[$i];
-          $this->logSection('doctrine', sprintf('Truncating "%s"', $class->name));
-          $em->createQuery('DELETE FROM '.$class->name)->execute();
+          if ($cmf->hasMetadataFor($class->name))
+          {
+            $this->logSection('doctrine', sprintf('Truncating "%s"', $class->name));
+            $em->createQuery('DELETE FROM '.$class->name)->execute();
+          }
         }
       }
     }
