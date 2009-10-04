@@ -62,6 +62,7 @@ EOF;
     $generatorManager->generate('sfDoctrineFormGenerator', array(
       'model_dir_name' => $options['model-dir-name'],
       'form_dir_name'  => $options['form-dir-name'],
+      'database_manager' => $databaseManager,
     ));
 
     $properties = parse_ini_file(sfConfig::get('sf_config_dir').DIRECTORY_SEPARATOR.'properties.ini', true);

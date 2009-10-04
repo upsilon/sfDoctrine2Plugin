@@ -1,4 +1,5 @@
-Username: <input type="text" name="username" value="<?php echo $user->username ?>" /><br/>
-Password: <input type="text" name="password" />
+<table>
+	<?php echo $form ?>
+</table>
 
 <br/><input type="submit" name="save" value="Save" />

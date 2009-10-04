@@ -10,11 +10,17 @@
  */
 class usersActions extends sfActions
 {
+	protected $em;
+
+	public function preExecute()
+	{
+	  $this->em = $this->getEntityManager();
+		parent::preExecute();
+	}
+
   public function executeIndex(sfWebRequest $request)
   {
-    $em = $this->getEntityManager();
-
-    $qb = $em->createQueryBuilder()
+    $qb = $this->em->createQueryBuilder()
       ->select('u', 'p', 'g')
       ->from('Models\User u')
       ->innerJoin('u.profile', 'p')
@@ -27,10 +33,8 @@ class usersActions extends sfActions
 
   public function executeEdit_user(sfWebRequest $request)
   {
-    $em = $this->getEntityManager();
-
     $id = $request->getParameter('id');
-    $qb = $em->createQueryBuilder()
+    $qb = $this->em->createQueryBuilder()
       ->select('u', 'p', 'g')
       ->from('Models\User u')
       ->innerJoin('u.profile', 'p')
@@ -40,28 +44,22 @@ class usersActions extends sfActions
     
     $this->user = $q->getSingleResult();
 
-    $this->_processForm($request, $this->user, $em);
+    $this->_processForm($request);
   }
 
   public function executeNew_user(sfWebRequest $request)
   {
-    $em = $this->getEntityManager();
     $this->user = new \Models\User();
-    $this->_processForm($request, $this->user, $em);
+    $this->_processForm($request);
   }
 
-  protected function _processForm(sfWebRequest $request, \Models\User $user, \Doctrine\ORM\EntityManager $em)
+  protected function _processForm(sfWebRequest $request)
   {
+		$this->form = new ModelsUserForm($this->em, $this->user);
     if ($request->isMethod('post'))
     {
-      $this->user->username = $request->getParameter('username');
-
-      if ($password = $request->getParameter('password'))
-      {
-        $this->user->password = $password;
-      }
-
-      $this->user->save();
+			$this->form->bind($request->getParameter($this->form->getName()));
+      $this->form->save();
 
       $this->redirect('@users');
     }

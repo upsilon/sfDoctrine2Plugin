@@ -140,7 +140,6 @@ EOF;
       // :insert-sql will also be run, below
     }
 
-    /*
     if (self::BUILD_MODEL == (self::BUILD_MODEL & $mode))
     {
       $task = new sfDoctrineBuildModelTask($this->dispatcher, $this->formatter);
@@ -179,7 +178,6 @@ EOF;
         return $ret;
       }
     }
-    */
 
     if (self::BUILD_DB == (self::BUILD_DB & $mode))
     {

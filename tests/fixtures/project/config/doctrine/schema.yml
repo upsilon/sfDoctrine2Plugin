@@ -64,15 +64,20 @@ Models\Profile:
       column: first_name
       type: string
       length: 255
+      notnull: true
     lastName:
       column: last_name
       type: string
       length: 255
+    userId:
+      column: user_id
+      type: integer
   oneToOne:
     user:
       targetEntity: Models\User
       joinColumn:
         name: user_id
+        fieldName: userId
         referencedColumnName: id
 
 Models\Group:

@@ -25,15 +25,19 @@ if (isset($app))
 {
   $configuration->initializeDoctrine((isset($fixtures) && $fixtures ? true:false));
   $databaseManager = $context->getDatabaseManager();
-} else if (isset($database) && $database)
+}
+else if (isset($database) && $database)
 {
   $databaseManager = new sfDatabaseManager($configuration);
 
   $configuration->initializeDoctrine((isset($fixtures) && $fixtures ? true:false));
 }
 
-$names = $databaseManager->getNames();
-$em = $databaseManager->getDatabase(end($names))->getEntityManager();
+if (isset($databaseManager))
+{
+	$names = $databaseManager->getNames();
+	$em = $databaseManager->getDatabase(end($names))->getEntityManager();
+}
 
 require_once $configuration->getSymfonyLibDir().'/vendor/lime/lime.php';
 

@@ -1,6 +1,6 @@
 <h1>Users</h1>
 
-<?php echo button_to('New User', '@new_user') ?>
+<?php echo link_to('New User', '@new_user') ?>
 
 <ul>
   <?php foreach ($users as $user): ?>
