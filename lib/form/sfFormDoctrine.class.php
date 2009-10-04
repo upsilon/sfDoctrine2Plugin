@@ -44,7 +44,7 @@ abstract class sfFormDoctrine extends sfFormObject
    *
    * @see sfForm
    */
-  public function __construct($em, $object = null, $options = array(), $CSRFSecret = null)
+  public function __construct(\Doctrine\ORM\EntityManager $em, $object = null, $options = array(), $CSRFSecret = null)
   {
 		$this->em = $em;
     $class = $this->getModelName();
@@ -449,7 +449,7 @@ abstract class sfFormDoctrine extends sfFormObject
     {
       if ($form instanceof sfFormDoctrine)
       {
-        $form->save($em);
+        $form->getObject()->save($em);
         $form->saveEmbeddedForms($em);
       }
       else
@@ -475,6 +475,7 @@ abstract class sfFormDoctrine extends sfFormObject
     }
 
     $defaults = $this->getDefaults();
+
     foreach ($this->embeddedForms as $name => $form)
     {
       if ($form instanceof sfFormDoctrine)
@@ -483,6 +484,7 @@ abstract class sfFormDoctrine extends sfFormObject
         $defaults[$name] = $form->getDefaults();
       }
     }
+
     $this->setDefaults($defaults);
   }
 

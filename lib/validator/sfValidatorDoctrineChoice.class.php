@@ -22,7 +22,7 @@ class sfValidatorDoctrineChoice extends sfValidatorBase
 {
 	protected $em;
 
-  public function __construct($em, $options = array(), $messages = array())
+  public function __construct(\Doctrine\ORM\EntityManager $em, $options = array(), $messages = array())
   {
 		$this->em = $em;
     parent::__construct($options, $messages);

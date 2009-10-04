@@ -11,14 +11,18 @@ $info = array(
 	'models_user' => array(
 		'isActive' => true,
 		'username' => 'jonwage2',
-		'password' => 'newpassword'
+		'password' => 'newpassword',
+		'profile' => array(
+			'firstName' => 'Jon',
+			'lastName' => 'Wage'
+		)
 	)
 );
 
 $checkInfo = array(
 	'isActive' => true,
 	'username' => 'jonwage2',
-	'password' => md5('newpassword')
+	'password' => md5('newpassword'),
 );
 
 $b->
@@ -41,7 +45,11 @@ $info = array(
 	'models_user' => array(
 		'isActive' => false,
 		'username' => 'jwage',
-		'password' => 'changeme'
+		'password' => 'changeme',
+		'profile' => array(
+			'firstName' => 'J',
+			'lastName' => 'Wage'
+		)
 	)
 );
 
@@ -59,6 +67,7 @@ $b->
 		end()->
 	  with('doctrine')->begin()->
 	    check($em, 'Models\User', $checkInfo)->
+			check($em, 'Models\Profile', $info['models_user']['profile'])->
 	  end()->
 		with('response')->begin()->
 			isRedirected(true)->

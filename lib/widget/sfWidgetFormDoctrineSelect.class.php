@@ -25,7 +25,7 @@ class sfWidgetFormDoctrineSelect extends sfWidgetFormSelect
   /**
    * @see sfWidget
    */
-  public function __construct($em, $options = array(), $attributes = array())
+  public function __construct(\Doctrine\ORM\EntityManager $em, $options = array(), $attributes = array())
   {
 		$this->em = $em;
     $options['choices'] = new sfCallable(array($this, 'getChoices'));

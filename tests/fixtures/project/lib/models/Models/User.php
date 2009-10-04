@@ -20,4 +20,9 @@ class User extends ActiveEntity
   {
     $this->password = md5($password);
   }
+
+	public function __toString()
+	{
+		return $this->get('username');
+	}
 }

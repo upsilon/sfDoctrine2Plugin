@@ -25,7 +25,7 @@ class sfWidgetFormDoctrineChoice extends sfWidgetFormChoice
   /**
    * @see sfWidget
    */
-  public function __construct($em, $options = array(), $attributes = array())
+  public function __construct(\Doctrine\ORM\EntityManager $em, $options = array(), $attributes = array())
   {
 		$this->em = $em;
     $options['choices'] = array();
@@ -57,7 +57,7 @@ class sfWidgetFormDoctrineChoice extends sfWidgetFormChoice
     $this->addRequiredOption('model');
     $this->addOption('add_empty', false);
     $this->addOption('method', '__toString');
-    $this->addOption('key_method', 'getPrimaryKey');
+    $this->addOption('key_method', 'getIdentifier');
     $this->addOption('order_by', null);
     $this->addOption('query', null);
     $this->addOption('multiple', false);
@@ -79,13 +79,14 @@ class sfWidgetFormDoctrineChoice extends sfWidgetFormChoice
       $choices[''] = true === $this->getOption('add_empty') ? '' : $this->getOption('add_empty');
     }
 
-    if (null === $this->getOption('table_method'))
+    if (null === $this->getOption('repository_method'))
     {
-      $query = null === $this->getOption('query') ? $this->em->createQueryBuilder()->from($this->getOption('model')) : $this->getOption('query');
+      $qb = null === $this->getOption('query') ? $this->em->createQueryBuilder()->select('a')->from($this->getOption('model'), 'a') : $this->getOption('query');
       if ($order = $this->getOption('order_by'))
       {
-        $query->addOrderBy($order[0], $order[1]);
+        $qb->addOrderBy($order[0], $order[1]);
       }
+			$query = $qb->getQuery();
       $objects = $query->execute();
     }
     else
