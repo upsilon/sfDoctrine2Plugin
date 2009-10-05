@@ -48,6 +48,56 @@ is slightly different from Doctrine 1. Below is an example:
           type: string
           length: 255
 
+## Custom Repository Class
+
+You can configure a custom repository class so you can add new methods for
+executing and retrieving queries.
+
+    [yml]
+    Models\User:
+      type: entity
+      table: user
+      repositoryClass: UserRepository
+    # ...
+
+Now define a `UserRepository` class:
+
+    [php]
+    class UserRepository extends EntityRepository
+    {
+      public function getActiveUsers()
+      {
+        $qb = $this->createQueryBuilder('u');
+        $q = $qb->getQuery();
+
+        return $q->execute();
+      }
+    }
+
+Now you can use this method like the following:
+
+    [php]
+    $repository = $em->getRepository('Models\User');
+    $users = $repository->getActiveUsers();
+
+If you utilize the `ActiveEntity` extension you can do the following:
+
+    [php]
+    $users = \Models\User::getActiveUsers();
+
+In order to use the above syntax your `User` model needs to extend `sfDoctrineActiveEntity`
+like the following:
+
+    [php]
+    namespace Models;
+
+    use sfDoctrineActiveEntity;
+
+    class User extends sfDoctrineActiveEntity
+    {
+      // ...
+    }
+
 ## Data Fixtures
 
 YAML data fixtures no longer exist in Doctrine 2. Instead we just
