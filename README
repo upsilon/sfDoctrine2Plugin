@@ -1,5 +1,7 @@
 # sfDoctrinePlugin 2.0
 
+## Configure Databases
+
 Sample `databases.yml` for MySQL:
 
     [yml]
@@ -24,3 +26,68 @@ Sample `databases.yml` for Sqlite:
             driver: pdo_sqlite
             path: %SF_DATA_DIR%/database.sqlite
 
+## Schema Files
+
+You can specify your schema files in `config/doctrine` just like normal. The schema syntax
+is slightly different from Doctrine 1. Below is an example:
+
+    [yml]
+    Models\User:
+      type: entity
+      table: user
+      id:
+        id:
+          type: integer
+          generator:
+            strategy: AUTO
+      fields:
+        username:
+          type: string
+          length: 255
+        password:
+          type: string
+          length: 255
+
+## Data Fixtures
+
+YAML data fixtures no longer exist in Doctrine 2. Instead we just
+use regular PHP code to load our data fixtures.
+
+    [php]
+    // data/fixtures/fixtures.php
+
+    $em = $this->getEntityManager();
+
+    $admin = new \Models\User();
+    $admin->username = 'admin';
+    $admin->password = 'changeme';
+
+The `$em` variable that is defined in the fixture files is the entity manager that
+will be used to persist the entities.
+
+## Building Doctrine
+
+Build models, forms, filters, database and load data fixtures.
+
+    $ php symfony doctrine:build --all --and-load
+
+## Updating Schema
+
+Updating your schema is just a matter of changing your mapping information in 
+`config/doctrine` and then running the following command:
+
+    $ php symfony doctrine:build --all-classes --and-update-schema
+
+## Entity Manager in Actions
+
+    [php]
+    class usersActions extends sfActions
+    {
+      public function executeIndex()
+      {
+        $em = $this->getEntityManager();
+        $qb = $em->createQueryBuilder();
+
+        // ...
+      }
+    }
