@@ -18,7 +18,7 @@ class BaseModelsGroupForm extends BaseFormDoctrine
     ));
 
     $this->setValidators(array(
-      'id'   => new sfValidatorDoctrineChoice($this->em, array('model' => 'Models\Group', 'column' => '', 'required' => false)),
+      'id'   => new sfValidatorDoctrineChoice($this->em, array('model' => 'Models\Group', 'column' => 'id', 'required' => false)),
       'name' => new sfValidatorString(array('max_length' => 255, 'required' => false)),
     ));
 

@@ -20,7 +20,7 @@ class BaseModelsUserForm extends BaseFormDoctrine
     ));
 
     $this->setValidators(array(
-      'id'       => new sfValidatorDoctrineChoice($this->em, array('model' => 'Models\User', 'column' => '', 'required' => false)),
+      'id'       => new sfValidatorDoctrineChoice($this->em, array('model' => 'Models\User', 'column' => 'id', 'required' => false)),
       'isActive' => new sfValidatorBoolean(array('required' => false)),
       'username' => new sfValidatorString(array('max_length' => 255, 'required' => false)),
       'password' => new sfValidatorString(array('max_length' => 255, 'required' => false)),

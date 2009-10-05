@@ -85,7 +85,7 @@ class sfDoctrineColumn implements ArrayAccess
    */
   public function getName()
   {
-    
+    return $this->name;
   }
 
   /**
@@ -95,7 +95,17 @@ class sfDoctrineColumn implements ArrayAccess
    */
   public function getFieldName()
   {
-    return $this->fieldMapping['fieldName'];
+    return $this->name;
+  }
+
+  /**
+   * Get the column name
+   *
+   * @return string $columName
+   */
+  public function getColumName()
+  {
+    return $this->fieldMapping['columnName'];
   }
 
   /**
@@ -226,12 +236,11 @@ class sfDoctrineColumn implements ArrayAccess
     {
       return false;
     }
-
     foreach ($this->metadata->associationMappings as $associationMapping)
     {
-      if ($associationMapping instanceof \Doctrine\ORM\Mapping\OneToOneMapping || $associationMapping instanceof \Doctrine\ORM\Mapping\OneToOneMapping)
+      if ($associationMapping instanceof \Doctrine\ORM\Mapping\OneToOneMapping || $associationMapping instanceof \Doctrine\ORM\Mapping\OneToManyMapping)
       {
-        if (isset($associationMapping->joinColumns[0]) && end($associationMapping->joinColumnFieldNames) == $this->name)
+        if (isset($associationMapping->joinColumns[0]['name']) && $this->name == $associationMapping->joinColumnFieldNames[$associationMapping->joinColumns[0]['name']])
         {
 					$this->foreignClassName = $associationMapping->targetEntityName;
           return true;

@@ -13,3 +13,6 @@ all:
       options:
         driver: pdo_sqlite
         path: %SF_DATA_DIR%/test2.sqlite
+        #driver: pdo_mysql
+        #user: root
+        #dbname: sfdoctrine2

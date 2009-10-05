@@ -40,7 +40,7 @@ abstract class sfDoctrineBaseTask extends sfBaseTask
     return $args;
   }
 
-  protected function callDoctrineCli($task, $arguments = array())
+  protected function callDoctrineCli($task, $arguments = array(), $em = true)
   {
     $args = array(
       './doctrine',
@@ -48,7 +48,10 @@ abstract class sfDoctrineBaseTask extends sfBaseTask
     );
 
     $args = array_merge($args, $arguments);
-    $args[] = '--config='.__DIR__.'/../../config/cli-config.php';
+    if ($em)
+    {
+      $args[] = '--config='.__DIR__.'/../../config/cli-config.php';
+    }
 
     $printer = new sfDoctrineCliPrinter();
     $printer->setFormatter($this->formatter);

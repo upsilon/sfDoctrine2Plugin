@@ -11,9 +11,6 @@ Models\User:
     isActive:
       column: is_active
       type: boolean
-      options:
-        - test
-        - ok
     username:
       type: string
       length: 255

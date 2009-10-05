@@ -16,12 +16,14 @@ class BaseModelsProfileFormFilter extends BaseFormFilterDoctrine
       'firstName' => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'lastName'  => new sfWidgetFormFilterInput(array()),
       'userId'    => new sfWidgetFormDoctrineChoice($this->em, array('model' => 'Models\User', 'add_empty' => true)),
+      'userId'    => new sfWidgetFormDoctrineChoice($this->em, array('model' => 'Models\User', 'add_empty' => true)),
     ));
 
     $this->setValidators(array(
       'firstName' => new sfValidatorPass(array('required' => false)),
       'lastName'  => new sfValidatorPass(array('required' => false)),
-      'userId'    => new sfValidatorDoctrineChoice($this->em, array('required' => false, 'model' => 'Models\User', 'column' => '')),
+      'userId'    => new sfValidatorDoctrineChoice($this->em, array('required' => false, 'model' => 'Models\User', 'column' => 'userId')),
+      'userId'    => new sfValidatorDoctrineChoice($this->em, array('required' => false, 'model' => 'Models\User', 'column' => 'userId')),
     ));
 
     $this->widgetSchema->setNameFormat('models_profile_filters[%s]');
@@ -44,6 +46,7 @@ class BaseModelsProfileFormFilter extends BaseFormFilterDoctrine
       'id'        => 'Number',
       'firstName' => 'Text',
       'lastName'  => 'Text',
+      'userId'    => 'ForeignKey',
       'userId'    => 'ForeignKey',
     );
   }

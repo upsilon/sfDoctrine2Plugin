@@ -60,7 +60,7 @@ abstract class sfFormDoctrine extends sfFormObject
       }
 
       $this->object = $object;
-      $this->isNew = !$this->object->id;
+      $this->isNew = !$this->object->exists();
     }
 
     parent::__construct(array(), $options, $CSRFSecret);
@@ -95,7 +95,7 @@ abstract class sfFormDoctrine extends sfFormObject
    */
   public function isNew()
   {
-    $this->isNew = !$this->object->id;
+    $this->isNew = !$this->object->exists();
 
     return $this->isNew;
   }

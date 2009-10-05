@@ -55,6 +55,7 @@ class sfDoctrineBuildTask extends sfDoctrineBaseTask
       new sfCommandOption('db', null, sfCommandOption::PARAMETER_NONE, 'Drop, create, and insert SQL'),
       new sfCommandOption('and-load', null, sfCommandOption::PARAMETER_OPTIONAL | sfCommandOption::IS_ARRAY, 'Load fixture data'),
       new sfCommandOption('and-append', null, sfCommandOption::PARAMETER_OPTIONAL | sfCommandOption::IS_ARRAY, 'Append fixture data'),
+      new sfCommandOption('and-update-schema', null, sfCommandOption::PARAMETER_NONE, 'Update schema after rebuilding all classes'),
     ));
 
     $this->namespace = 'doctrine';
@@ -102,6 +103,11 @@ To append fixture data without erasing any records from the database, include
 the [--and-append|COMMENT] option:
 
   [./symfony doctrine:build --all --and-append|INFO]
+
+To update your database schema after rebuilding all your classes, include 
+the [--and-update-schema|COMMENT] option:
+
+  [./symfony doctrine:build --all-classes --and-update-schema|INFO]
 EOF;
   }
 
@@ -190,6 +196,14 @@ EOF;
       {
         return $ret;
       }
+    }
+
+    if (isset($options['and-update-schema']) && $options['and-update-schema'])
+    {
+      $task = new sfDoctrineUpdateSchemaTask($this->dispatcher, $this->formatter);
+      $task->setCommandApplication($this->commandApplication);
+      $task->setConfiguration($this->configuration);
+      $task->run();
     }
 
     if (count($options['and-load']) || count($options['and-append']))

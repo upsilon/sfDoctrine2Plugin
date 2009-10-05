@@ -57,6 +57,27 @@ EOF;
    */
   protected function execute($arguments = array(), $options = array())
   {
+    $opts = array();
+
+    $plugins = $this->configuration->getPlugins();
+    foreach ($this->configuration->getAllPluginPaths() as $plugin => $path)
+    {
+      if (!in_array($plugin, $plugins))
+      {
+        continue;
+      }
+      $path = $path.'/config/doctrine';
+      $opts['from'][] = $path;
+    }
+    
+    $opts['from'][] = sfConfig::get('sf_config_dir').'/doctrine';
+    $opts['to'] = 'annotation';
+    $opts['dest'] = sfConfig::get('sf_lib_dir').'/models';
+
+    $task = new sfDoctrineConvertMappingTask($this->dispatcher, $this->formatter);
+    $task->setCommandApplication($this->commandApplication);
+    $task->setConfiguration($this->configuration);
+    $task->run(array(), $opts);
 
     $this->reloadAutoload();
   }

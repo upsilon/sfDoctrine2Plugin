@@ -4,10 +4,13 @@ use \Doctrine\ORM\EntityRepository;
 
 class UserRepository extends EntityRepository
 {
-	public function getEditUser(\Doctrine\ORM\QueryBuilder $qb)
+	public function getEditUserQb(array $params)
 	{
-		$qb->innerJoin('a.profile', 'p')
-			 ->addSelect('p');
+	  $qb = $this->_em->createQueryBuilder();
+
+		$qb->from('Models\User', 'a')
+		   ->innerJoin('a.profile', 'p')
+			 ->addSelect('a', 'p');
 
     return $qb;
 	}

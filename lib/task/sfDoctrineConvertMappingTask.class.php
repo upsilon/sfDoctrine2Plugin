@@ -55,9 +55,11 @@ EOF;
       throw new InvalidArgumentException('You must include a value for all four options: --from, --to and --dest');
     }
 
-    $keys = array('from', 'to', 'dest');
+    $keys = array('from', 'to', 'dest', 'extend', 'num-spaces');
+    $options['extend'] = 'sfDoctrineActiveEntity';
+    $options['num-spaces'] = 2;
     $args = $this->prepareDoctrineCliArguments($options, $keys);
 
-    $this->callDoctrineCli('convert-mapping', $args);
+    $this->callDoctrineCli('convert-mapping', $args, false);
   }
 }

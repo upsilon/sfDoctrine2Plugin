@@ -18,5 +18,5 @@ $profile->user = $jwage;
 
 $group = new \Models\Group();
 $group->name = 'Admin';
-$group->add('users', $jwage);
-$group->add('users', $admin);
+$group->addUsers($jwage);
+$group->addUsers($admin);

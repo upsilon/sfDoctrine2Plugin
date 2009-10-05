@@ -592,6 +592,18 @@ class sfDoctrineFormGenerator extends sfGenerator
       $columns[] = new sfDoctrineColumn($name, $fieldMapping, $this->metadata, $this);
     }
 
+    foreach ($this->metadata->associationMappings as $name => $associationMapping)
+    {
+      if (isset($associationMapping->joinColumns[0]['name']))
+      {
+        $fieldMapping = array();
+        $fieldMapping['fieldName'] = $associationMapping->joinColumnFieldNames[$associationMapping->joinColumns[0]['name']];
+        $fieldMapping['columName'] = $associationMapping->joinColumns[0]['name'];
+        $fieldMapping['type'] = 'integer';
+        $columns[] = new sfDoctrineColumn($fieldMapping['fieldName'], $fieldMapping, $this->metadata, $this);
+      }
+    }
+
     return $columns;
   }
 

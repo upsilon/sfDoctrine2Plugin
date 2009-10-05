@@ -17,12 +17,14 @@ class BaseModelsProfileForm extends BaseFormDoctrine
       'firstName' => new sfWidgetFormInputText(array()),
       'lastName'  => new sfWidgetFormInputText(array()),
       'userId'    => new sfWidgetFormDoctrineChoice($this->em, array('model' => 'Models\User', 'add_empty' => true)),
+      'userId'    => new sfWidgetFormDoctrineChoice($this->em, array('model' => 'Models\User', 'add_empty' => true)),
     ));
 
     $this->setValidators(array(
-      'id'        => new sfValidatorDoctrineChoice($this->em, array('model' => 'Models\Profile', 'column' => '', 'required' => false)),
+      'id'        => new sfValidatorDoctrineChoice($this->em, array('model' => 'Models\Profile', 'column' => 'id', 'required' => false)),
       'firstName' => new sfValidatorString(array('max_length' => 255)),
       'lastName'  => new sfValidatorString(array('max_length' => 255, 'required' => false)),
+      'userId'    => new sfValidatorDoctrineChoice($this->em, array('model' => 'Models\User', 'required' => false)),
       'userId'    => new sfValidatorDoctrineChoice($this->em, array('model' => 'Models\User', 'required' => false)),
     ));
 
