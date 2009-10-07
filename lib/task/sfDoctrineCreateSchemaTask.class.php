@@ -28,7 +28,8 @@ class sfDoctrineCreateSchemaTask extends sfDoctrineBaseTask
   {
     $this->addOptions(array(
       new sfCommandOption('application', null, sfCommandOption::PARAMETER_OPTIONAL, 'The application name', true),
-      new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev')
+      new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
+      new sfCommandOption('dump-sql', null, sfCommandOption::PARAMETER_NONE, 'Whether to output the generated sql instead of executing'),
     ));
 
     $this->aliases = array('doctrine-insert-sql', 'doctrine:insert-sql');
@@ -51,6 +52,10 @@ EOF;
    */
   protected function execute($arguments = array(), $options = array())
   {
-    $this->callDoctrineCli('schema-tool', array('--create'));
+    $keys = array('dump-sql', 'create');
+    $options['create'] = true;
+    $args = $this->prepareDoctrineCliArguments($options, $keys);
+
+    $this->callDoctrineCli('schema-tool', $args);
   }
 }

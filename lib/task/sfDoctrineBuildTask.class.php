@@ -56,6 +56,7 @@ class sfDoctrineBuildTask extends sfDoctrineBaseTask
       new sfCommandOption('and-load', null, sfCommandOption::PARAMETER_OPTIONAL | sfCommandOption::IS_ARRAY, 'Load fixture data'),
       new sfCommandOption('and-append', null, sfCommandOption::PARAMETER_OPTIONAL | sfCommandOption::IS_ARRAY, 'Append fixture data'),
       new sfCommandOption('and-update-schema', null, sfCommandOption::PARAMETER_NONE, 'Update schema after rebuilding all classes'),
+      new sfCommandOption('dump-sql', null, sfCommandOption::PARAMETER_NONE, 'Whether to output the generated sql instead of executing'),
     ));
 
     $this->namespace = 'doctrine';
@@ -190,7 +191,7 @@ EOF;
       $task = new sfDoctrineCreateSchemaTask($this->dispatcher, $this->formatter);
       $task->setCommandApplication($this->commandApplication);
       $task->setConfiguration($this->configuration);
-      $ret = $task->run();
+      $ret = $task->run(array(), array('dump-sql' => $options['dump-sql']));
 
       if ($ret)
       {
@@ -203,7 +204,7 @@ EOF;
       $task = new sfDoctrineUpdateSchemaTask($this->dispatcher, $this->formatter);
       $task->setCommandApplication($this->commandApplication);
       $task->setConfiguration($this->configuration);
-      $task->run();
+      $task->run(array(), array('dump-sql' => $options['dump-sql']));
     }
 
     if (count($options['and-load']) || count($options['and-append']))

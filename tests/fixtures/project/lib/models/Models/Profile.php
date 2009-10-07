@@ -95,4 +95,24 @@ class Profile extends sfDoctrineActiveEntity
   {
     return $this->user;
   }
+  /**
+   * @Column(name="test", type="string", length=255)
+   */
+  private $test;
+
+  /**
+   * Set test
+   */
+  public function setTest($value)
+  {
+    $this->test = $value;
+  }
+
+  /**
+   * Get test
+   */
+  public function getTest()
+  {
+    return $this->test;
+  }
 }
