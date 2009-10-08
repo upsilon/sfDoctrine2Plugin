@@ -5,5 +5,5 @@ $databaseManager = new sfDatabaseManager($configuration);
 $names = $databaseManager->getNames();
 $em = $databaseManager->getDatabase(end($names))->getEntityManager();
 $args = array(
-  'classdir' => sfConfig::get('sf_lib_dir').'/entities/Entities'
+  'class-dir' => sfConfig::get('sf_lib_dir').'/entities/Entities'
 );

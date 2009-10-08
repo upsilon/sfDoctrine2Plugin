@@ -13,8 +13,6 @@ class sfDoctrineCliPrinter extends AnsiColorPrinter
 
   public function write($message, $style = 'NONE')
   {
-    $style = is_string($style) ? $this->getStyle($style) : $style;
-
     fwrite($this->_stream, $this->format($message, $style));
     
     return $this;
@@ -22,11 +20,10 @@ class sfDoctrineCliPrinter extends AnsiColorPrinter
 
   public function writeln($message, $style = 'NONE')
   {
-    if ($message == 'Doctrine Command Line Interface')
+    $messages = explode("\n", $message);
+    foreach ($messages as $message)
     {
-      return $this;
+      $this->write($this->formatter->formatSection('doctrine', $this->format($message.PHP_EOL, $style)));
     }
-
-    return $this->write($this->formatter->formatSection('doctrine', $message).PHP_EOL, $style);
   }
 }

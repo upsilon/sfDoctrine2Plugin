@@ -26,7 +26,7 @@ abstract class sfDoctrineBaseTask extends sfBaseTask
     {
       foreach ($keys as $key)
       {
-        if ($value = $arguments[$key])
+        if (isset($arguments[$key]) && $value = $arguments[$key])
         {
           $args[] = '--'.$key.'='.implode(',', (array) $value);
         }
