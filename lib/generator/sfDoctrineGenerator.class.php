@@ -29,7 +29,8 @@ class sfDoctrineGenerator extends sfModelGenerator
   public function initialize(sfGeneratorManager $generatorManager)
   {
     parent::initialize($generatorManager);
-		$this->databaseManager = sfContext::getInstance()->getDatabaseManager();
+    $configuration = sfProjectConfiguration::getActive();
+    $this->databaseManager = new sfDatabaseManager($configuration);
     $this->setGeneratorClass('sfDoctrineModule');
   }
 
