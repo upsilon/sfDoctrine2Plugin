@@ -88,7 +88,9 @@ EOF;
           if ($cmf->hasMetadataFor($class->name))
           {
             $this->logSection('doctrine', sprintf('Truncating "%s"', $class->name));
-            $em->createQuery('DELETE FROM '.$class->name)->execute();
+            try {
+              $em->createQuery('DELETE FROM '.$class->name)->execute();
+            } catch (Exception $e) {}
           }
         }
       }

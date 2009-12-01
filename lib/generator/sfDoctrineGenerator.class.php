@@ -312,4 +312,16 @@ class sfDoctrineGenerator extends sfModelGenerator
 		$name = str_replace('\\', '_', $name);
 		return sfInflector::underscore($name);
 	}
+
+  public function camelize($name)
+  {
+    $name = str_replace('\\', '_', $name);
+    $name = sfInflector::camelize($name);
+    return strtolower($name[0]).substr($name, 1);
+  }
+
+  public function getSingularName()
+ 	{
+ 	  return isset($this->params['singular']) ? $this->params['singular'] : $this->camelize($this->getModelClass());
+ 	}
 }

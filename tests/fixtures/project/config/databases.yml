@@ -11,8 +11,8 @@ all:
       schema: %SF_CONFIG_DIR%/doctrine
       plugins: ~
       options:
-        driver: pdo_sqlite
-        path: %SF_DATA_DIR%/test2.sqlite
-        #driver: pdo_mysql
-        #user: root
-        #dbname: sfdoctrine2
+        #driver: pdo_sqlite
+        #path: %SF_DATA_DIR%/test2.sqlite
+        driver: pdo_mysql
+        user: root
+        dbname: sfdoctrine2

@@ -24,7 +24,7 @@ class BaseEntitiesUserFormFilter extends BaseFormFilterDoctrine
       'password' => new sfValidatorPass(array('required' => false)),
     ));
 
-    $this->widgetSchema->setNameFormat('models_user_filters[%s]');
+    $this->widgetSchema->setNameFormat('entities_user_filters[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
 

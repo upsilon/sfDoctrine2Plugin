@@ -2,21 +2,24 @@
 
 $em = $this->getEntityManager();
 
-$admin = new \Models\User();
+$admin = new \Entities\User();
+$admin->isActive = true;
 $admin->username = 'admin';
 $admin->password = 'changeme';
 
-$jwage = new \Models\User();
+$jwage = new \Entities\User();
+$jwage->isActive = true;
 $jwage->username = 'jwage';
 $jwage->password = 'changeme';
 
-$profile = new \Models\Profile();
+$profile = new \Entities\Profile();
+$profile->isActive = true;
 $profile->firstName = 'Jonathan';
 $profile->lastName = 'Wage';
 $jwage->profile = $profile;
 $profile->user = $jwage;
 
-$group = new \Models\Group();
+$group = new \Entities\Group();
 $group->name = 'Admin';
 $group->addUsers($jwage);
 $group->addUsers($admin);

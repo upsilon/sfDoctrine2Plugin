@@ -1,6 +1,6 @@
 <?php
 
-use Doctrine\ORM\Tools\Cli\Printers\AnsiColorPrinter;
+use Doctrine\Common\Cli\Printers\AnsiColorPrinter;
 
 class sfDoctrineCliPrinter extends AnsiColorPrinter
 {

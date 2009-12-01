@@ -19,7 +19,7 @@
       $this->redirect('@<?php echo $this->getUrlForAction('list') ?>');
     }
 
-    $this->pager = $this->getPager();
+    $this->pager = $this->getPager('<?php echo $this->getModelClass() ?>');
     $this->sort = $this->getSort();
 
     $this->setTemplate('index');

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * EntitiesProfile form.
+ * EntitiesUser form.
  *
  * @package    test
  * @subpackage form
  * @author     Your name here
  * @version    SVN: $Id$
  */
-class EntitiesProfileForm extends BaseEntitiesProfileForm
+class EntitiesUserForm extends BaseEntitiesUserForm
 {
   public function configure()
   {

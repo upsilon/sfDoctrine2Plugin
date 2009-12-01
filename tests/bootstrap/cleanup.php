@@ -1,7 +1,7 @@
 <?php
 function cleanup()
 {
-  sfToolkit::clearDirectory(dirname(__FILE__).'/../fixtures/project/cache');
+  //sfToolkit::clearDirectory(dirname(__FILE__).'/../fixtures/project/cache');
   sfToolkit::clearDirectory(dirname(__FILE__).'/../fixtures/project/log');
 
   @unlink(sfConfig::get('sf_data_dir').'/test.sqlite');

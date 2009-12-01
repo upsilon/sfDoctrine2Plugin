@@ -2,7 +2,7 @@
 
 if (!isset($_SERVER['SYMFONY']))
 {
-  $_SERVER['SYMFONY'] = '/Users/jwage/Sites/symfonysvn/1.3/lib';
+  $_SERVER['SYMFONY'] = '/Users/jwage/Sites/symfonysvn/1.4/lib';
 }
 
 require_once $_SERVER['SYMFONY'].'/autoload/sfCoreAutoload.class.php';

@@ -12,6 +12,6 @@
       $this->setPage($request->getParameter('page'));
     }
 
-    $this->pager = $this->getPager();
+    $this->pager = $this->getPager('<?php echo $this->getModelClass() ?>');
     $this->sort = $this->getSort();
   }

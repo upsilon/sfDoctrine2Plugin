@@ -16,17 +16,15 @@ class BaseEntitiesProfileFormFilter extends BaseFormFilterDoctrine
       'firstName' => new sfWidgetFormFilterInput(array('with_empty' => false)),
       'lastName'  => new sfWidgetFormFilterInput(array()),
       'userId'    => new sfWidgetFormDoctrineChoice($this->em, array('model' => 'Entities\User', 'add_empty' => true)),
-      'userId'    => new sfWidgetFormDoctrineChoice($this->em, array('model' => 'Entities\User', 'add_empty' => true)),
     ));
 
     $this->setValidators(array(
       'firstName' => new sfValidatorPass(array('required' => false)),
       'lastName'  => new sfValidatorPass(array('required' => false)),
       'userId'    => new sfValidatorDoctrineChoice($this->em, array('required' => false, 'model' => 'Entities\User', 'column' => 'userId')),
-      'userId'    => new sfValidatorDoctrineChoice($this->em, array('required' => false, 'model' => 'Entities\User', 'column' => 'userId')),
     ));
 
-    $this->widgetSchema->setNameFormat('models_profile_filters[%s]');
+    $this->widgetSchema->setNameFormat('entities_profile_filters[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
 
@@ -46,7 +44,6 @@ class BaseEntitiesProfileFormFilter extends BaseFormFilterDoctrine
       'id'        => 'Number',
       'firstName' => 'Text',
       'lastName'  => 'Text',
-      'userId'    => 'ForeignKey',
       'userId'    => 'ForeignKey',
     );
   }

@@ -1,7 +1,7 @@
 models\user_users:
   class: sfDoctrineRouteCollection
   options:
-    model:                Models\User
+    model:                Entities\User
     module:               users
     prefix_path:          users
     column:               id

@@ -44,6 +44,8 @@ class sfDoctrineDatabase extends sfDatabase
       $paths[] = $schema;
     }
 
+    $paths[] = realpath(__DIR__ . '/../config/doctrine');
+
     $enabledPlugins = $configuration->getPlugins();
     foreach ($configuration->getAllPluginPaths() as $plugin => $path)
     {
@@ -53,7 +55,6 @@ class sfDoctrineDatabase extends sfDatabase
       }
       $paths[] = $path.'/config/doctrine';
     }
-    $paths[] = realpath(__DIR__.'/../config/doctrine');
     $paths = array_unique($paths);
 
     $config->setMetadataDriverImpl(new YamlDriver($paths, YamlDriver::PRELOAD));

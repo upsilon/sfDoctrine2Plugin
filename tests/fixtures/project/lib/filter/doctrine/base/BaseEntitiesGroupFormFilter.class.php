@@ -20,7 +20,7 @@ class BaseEntitiesGroupFormFilter extends BaseFormFilterDoctrine
       'name' => new sfValidatorPass(array('required' => false)),
     ));
 
-    $this->widgetSchema->setNameFormat('models_group_filters[%s]');
+    $this->widgetSchema->setNameFormat('entities_group_filters[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
 

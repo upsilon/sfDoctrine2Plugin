@@ -8,7 +8,7 @@ class UserRepository extends EntityRepository
 	{
 	  $qb = $this->_em->createQueryBuilder();
 
-		$qb->from('Models\User', 'a')
+		$qb->from('Entities\User', 'a')
 		   ->innerJoin('a.profile', 'p')
 			 ->addSelect('a', 'p');
 

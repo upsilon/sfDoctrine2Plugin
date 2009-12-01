@@ -72,7 +72,7 @@ EOF;
     
     $opts['from'][] = sfConfig::get('sf_config_dir').'/doctrine';
     $opts['to'] = 'annotation';
-    $opts['dest'] = sfConfig::get('sf_lib_dir').'/models';
+    $opts['dest'] = sfConfig::get('sf_lib_dir').'/entities/doctrine';
 
     $task = new sfDoctrineConvertMappingTask($this->dispatcher, $this->formatter);
     $task->setCommandApplication($this->commandApplication);

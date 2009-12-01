@@ -17,7 +17,6 @@ class BaseEntitiesProfileForm extends BaseFormDoctrine
       'firstName' => new sfWidgetFormInputText(array()),
       'lastName'  => new sfWidgetFormInputText(array()),
       'userId'    => new sfWidgetFormDoctrineChoice($this->em, array('model' => 'Entities\User', 'add_empty' => true)),
-      'userId'    => new sfWidgetFormDoctrineChoice($this->em, array('model' => 'Entities\User', 'add_empty' => true)),
     ));
 
     $this->setValidators(array(
@@ -25,10 +24,9 @@ class BaseEntitiesProfileForm extends BaseFormDoctrine
       'firstName' => new sfValidatorString(array('max_length' => 255)),
       'lastName'  => new sfValidatorString(array('max_length' => 255, 'required' => false)),
       'userId'    => new sfValidatorDoctrineChoice($this->em, array('model' => 'Entities\User', 'required' => false)),
-      'userId'    => new sfValidatorDoctrineChoice($this->em, array('model' => 'Entities\User', 'required' => false)),
     ));
 
-    $this->widgetSchema->setNameFormat('models_profile[%s]');
+    $this->widgetSchema->setNameFormat('entities_profile[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
 

@@ -22,7 +22,7 @@ class BaseEntitiesGroupForm extends BaseFormDoctrine
       'name' => new sfValidatorString(array('max_length' => 255, 'required' => false)),
     ));
 
-    $this->widgetSchema->setNameFormat('models_group[%s]');
+    $this->widgetSchema->setNameFormat('entities_group[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
 

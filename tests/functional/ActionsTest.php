@@ -33,7 +33,7 @@ $b->
 		hasErrors(false)->
 	end()->
   with('doctrine')->begin()->
-    check($em, 'Models\User', $checkInfo)->
+    check($em, 'Entities\User', $checkInfo)->
   end()->
 	with('response')->begin()->
 		isRedirected(true)->
@@ -67,8 +67,8 @@ $b->
 			hasErrors(false)->
 		end()->
 	  with('doctrine')->begin()->
-	    check($em, 'Models\User', $checkInfo)->
-			check($em, 'Models\Profile', $info['models_user']['profile'])->
+	    check($em, 'Entities\User', $checkInfo)->
+			check($em, 'Entities\Profile', $info['models_user']['profile'])->
 	  end()->
 		with('response')->begin()->
 			isRedirected(true)->

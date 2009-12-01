@@ -91,8 +91,7 @@ class sfDoctrineFormFilterGenerator extends sfDoctrineFormGenerator
         mkdir($baseDir.'/base', 0777, true);
       }
 
-      $path = $baseDir.'/base/Base'.$this->modelName.'FormFilter.class.php';
-      $path = str_replace('\\', '', $path);
+      $path = $baseDir.'/base/Base'.str_replace('\\', '', $this->modelName).'FormFilter.class.php';
       $dir = dirname($path);
       if (!is_dir($dir))
       {

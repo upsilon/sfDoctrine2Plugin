@@ -49,7 +49,7 @@ You can specify your schema files in `config/doctrine` just like normal. The sch
 is slightly different from Doctrine 1. Below is an example:
 
     [yml]
-    Models\User:
+    Entities\User:
       type: entity
       table: user
       id:
@@ -71,7 +71,7 @@ You can configure a custom repository class so you can add new methods for
 executing and retrieving queries.
 
     [yml]
-    Models\User:
+    Entities\User:
       type: entity
       table: user
       repositoryClass: UserRepository
@@ -94,19 +94,19 @@ Now define a `UserRepository` class:
 Now you can use this method like the following:
 
     [php]
-    $repository = $em->getRepository('Models\User');
+    $repository = $em->getRepository('Entities\User');
     $users = $repository->getActiveUsers();
 
 If you utilize the `ActiveEntity` extension you can do the following:
 
     [php]
-    $users = \Models\User::getActiveUsers();
+    $users = \Entities\User::getActiveUsers();
 
 In order to use the above syntax your `User` model needs to extend `sfDoctrineActiveEntity`
 like the following:
 
     [php]
-    namespace Models;
+    namespace Entities;
 
     use sfDoctrineActiveEntity;
 
@@ -125,7 +125,7 @@ use regular PHP code to load our data fixtures.
 
     $em = $this->getEntityManager();
 
-    $admin = new \Models\User();
+    $admin = new \Entities\User();
     $admin->username = 'admin';
     $admin->password = 'changeme';
 

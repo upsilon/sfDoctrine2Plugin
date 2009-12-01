@@ -1,7 +1,7 @@
 generator:
   class: sfDoctrineGenerator
   param:
-    model_class:           Models\User
+    model_class:           Entities\User
     theme:                 admin
     non_verbose_templates: true
     with_show:             false

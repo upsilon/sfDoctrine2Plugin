@@ -51,15 +51,12 @@ abstract class sfDoctrineBaseTask extends sfBaseTask
     );
 
     $args = array_merge($args, $arguments);
-    if ($em)
-    {
-      $args[] = '--config='.__DIR__.'/../../config/cli-config.php';
-    }
+    $args[] = '--config='.__DIR__.'/../../config/cli-config.php';
 
     $printer = new sfDoctrineCliPrinter();
     $printer->setFormatter($this->formatter);
 
-    $cli = new \Doctrine\ORM\Tools\Cli($printer);
+    $cli = new \Doctrine\ORM\Tools\Cli\CliController();
     $cli->run($args);
   }
 

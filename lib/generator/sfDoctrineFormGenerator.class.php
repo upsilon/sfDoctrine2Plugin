@@ -34,7 +34,7 @@ class sfDoctrineFormGenerator extends sfGenerator
    *
    * @var array
    */
-  public $pluginModels = array();
+  public $pluginEntities = array();
 
   public $databaseManager;
 
@@ -124,8 +124,7 @@ class sfDoctrineFormGenerator extends sfGenerator
         mkdir($baseDir.'/base', 0777, true);
       }
 
-      $path = $baseDir.'/base/Base'.$metadata->name.'Form.class.php';
-      $path = str_replace('\\', '', $path);
+      $path = $baseDir.'/base/Base'.str_replace('\\', '', $metadata->name).'Form.class.php';
       $dir = dirname($path);
       if (!is_dir($dir))
       {
@@ -171,11 +170,11 @@ class sfDoctrineFormGenerator extends sfGenerator
    *
    * @todo This method is ugly and is a very weird way of finding the models which 
    *       belong to plugins. If we could come up with a better way that'd be great
-   * @return array $pluginModels
+   * @return array $pluginEntities
    */
-  public function getPluginModels()
+  public function getPluginEntities()
   {
-    if (!$this->pluginModels)
+    if (!$this->pluginEntities)
     {
       $plugins     = $this->generatorManager->getConfiguration()->getPlugins();
       $pluginPaths = $this->generatorManager->getConfiguration()->getAllPluginPaths();
@@ -199,11 +198,11 @@ class sfDoctrineFormGenerator extends sfGenerator
             $reflection = new ReflectionClass($modelName);
             if ($reflection->isSubClassOf($parent))
             {
-              $this->pluginModels[$modelName] = $pluginName;
+              $this->pluginEntities[$modelName] = $pluginName;
               $generators = Doctrine::getTable($modelName)->getGenerators();
               foreach ($generators as $generator)
               {
-                $this->pluginModels[$generator->getOption('className')] = $pluginName;
+                $this->pluginEntities[$generator->getOption('className')] = $pluginName;
               }
             }
           }
@@ -211,7 +210,7 @@ class sfDoctrineFormGenerator extends sfGenerator
       }
     }
 
-    return $this->pluginModels;
+    return $this->pluginEntities;
   }
 
   /**
@@ -222,7 +221,7 @@ class sfDoctrineFormGenerator extends sfGenerator
    */
   public function isPluginModel($modelName)
   {
-    return isset($this->pluginModels[$modelName]) ? true:false;
+    return isset($this->pluginEntities[$modelName]) ? true:false;
   }
 
   /**
@@ -235,7 +234,7 @@ class sfDoctrineFormGenerator extends sfGenerator
   {
     if ($this->isPluginModel($modelName))
     {
-      return $this->pluginModels[$modelName];
+      return $this->pluginEntities[$modelName];
     } else {
       return false;
     }

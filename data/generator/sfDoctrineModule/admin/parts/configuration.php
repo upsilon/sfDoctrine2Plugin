@@ -25,7 +25,7 @@ class Base<?php echo ucfirst($this->getModuleName()) ?>GeneratorConfiguration ex
 <?php unset($this->config['form']['class']) ?>
   }
 
-  public function getForm($object = null)
+  public function getForm($object = null, $options = array())
   {
     $class = $this->getFormClass();
 
@@ -36,6 +36,11 @@ class Base<?php echo ucfirst($this->getModuleName()) ?>GeneratorConfiguration ex
 	{
 		$this->em = $em;
 	}
+
+  public function getEntityManager()
+  {
+    return $this->em;
+  }
 
   public function hasFilterForm()
   {

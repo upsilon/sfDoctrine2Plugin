@@ -26,7 +26,7 @@ class BaseEntitiesUserForm extends BaseFormDoctrine
       'password' => new sfValidatorString(array('max_length' => 255, 'required' => false)),
     ));
 
-    $this->widgetSchema->setNameFormat('models_user[%s]');
+    $this->widgetSchema->setNameFormat('entities_user[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
 

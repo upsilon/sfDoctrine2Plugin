@@ -46,8 +46,8 @@ class sfDoctrine2PluginConfiguration extends sfPluginConfiguration
     $classLoader->setBasePath(__DIR__.'/../lib/vendor/doctrine');
     $classLoader->register();
 
-    $classLoader = new \Doctrine\Common\IsolatedClassLoader('Models');
-    $classLoader->setBasePath(sfConfig::get('sf_lib_dir').'/models');
+    $classLoader = new \Doctrine\Common\IsolatedClassLoader('Entities');
+    $classLoader->setBasePath(sfConfig::get('sf_lib_dir').'/entities/doctrine');
     $classLoader->register();
 
     $this->dispatcher->connect('component.method_not_found', array($this, 'componentMethodNotFound'));
@@ -84,13 +84,18 @@ class sfDoctrine2PluginConfiguration extends sfPluginConfiguration
 		}
 		else if ($method == 'getEntityManagerFor')
 		{
+		  $entityName = $args[0];
+		  if (is_object($entityName))
+		  {
+		    $entityName = get_class($entityName);
+		  }
 			$databaseManager = $actions->getContext()->getDatabaseManager();
       $names = $databaseManager->getNames();
 			foreach ($names as $name)
 			{
 				$em = $databaseManager->getDatabase($name)->getEntityManager();
 				$cmf = $em->getMetadataFactory();
-				if ($cmf->hasMetadataFor($args[0]))
+				if ($cmf->hasMetadataFor($entityName))
 				{
 					$event->setReturnValue($em);
 					return true;
@@ -100,15 +105,20 @@ class sfDoctrine2PluginConfiguration extends sfPluginConfiguration
     }
 		else if ($method == 'getMetadataFor')
 		{
+		  $entityName = $args[0];
+		  if (is_object($entityName))
+		  {
+		    $entityName = get_class($entityName);
+		  }
 			$databaseManager = $actions->getContext()->getDatabaseManager();
       $names = $databaseManager->getNames();
 			foreach ($names as $name)
 			{
 				$em = $databaseManager->getDatabase($name)->getEntityManager();
 				$cmf = $em->getMetadataFactory();
-				if ($cmf->hasMetadataFor($args[0]))
+				if ($cmf->hasMetadataFor($entityName))
 				{
-					$event->setReturnValue($cmf->getMetadataFor($args[0]));
+					$event->setReturnValue($cmf->getMetadataFor($entityName));
 					return true;
 				}
 			}

@@ -1,4 +1,4 @@
-Models\User:
+Entities\User:
   type: entity
   table: user
   repositoryClass: UserRepository
@@ -22,11 +22,11 @@ Models\User:
       version: true
   oneToOne:
     profile:
-      targetEntity: Models\Profile
+      targetEntity: Entities\Profile
       mappedBy: user
   manyToMany:
     groups:
-      targetEntity: Models\Group
+      targetEntity: Entities\Group
       joinTable:
         name: user_group
         joinColumns:
@@ -36,10 +36,10 @@ Models\User:
           group_id:
             referencedColumnName: id
     friendsWithMe:
-      targetEntity: Models\User
+      targetEntity: Entities\User
       mappedBy: myFriends
     myFriends:
-      targetEntity: Models\User
+      targetEntity: Entities\User
       joinTable:
         name: friends
         joinColumns:
@@ -49,7 +49,7 @@ Models\User:
           friend_user_id:
             referencedColumnName: id
 
-Models\Profile:
+Entities\Profile:
   type: entity
   table: profile
   id:
@@ -67,18 +67,16 @@ Models\Profile:
       column: last_name
       type: string
       length: 255
-    userId:
-      column: user_id
-      type: integer
   oneToOne:
     user:
-      targetEntity: Models\User
+      targetEntity: Entities\User
       joinColumn:
         name: user_id
         fieldName: userId
         referencedColumnName: id
+        onDelete: CASCADE
 
-Models\Group:
+Entities\Group:
   type: entity
   table: groups
   id:
@@ -92,5 +90,5 @@ Models\Group:
       length: 255
   manyToMany:
     users:
-      targetEntity: Models\User
+      targetEntity: Entities\User
       mappedBy: groups

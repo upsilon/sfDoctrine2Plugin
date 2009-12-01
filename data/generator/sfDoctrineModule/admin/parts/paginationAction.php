@@ -1,6 +1,6 @@
-  protected function getPager()
+  public function getPager($model)
   {
-    $pager = $this->configuration->getPager($this->getEntityManagerFor('<?php echo $this->getModelClass() ?>'), '<?php echo $this->getModelClass() ?>');
+    $pager = $this->configuration->getPager($this->getEntityManagerFor($model), '<?php echo $this->getModelClass() ?>');
     $pager->setQuery($this->buildQuery());
     $pager->setPage($this->getPage());
     $pager->init();

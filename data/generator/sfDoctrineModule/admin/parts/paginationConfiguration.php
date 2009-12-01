@@ -1,5 +1,6 @@
-  public function getPager($em, $model)
+  public function getPager($model)
   {
+    $em = $this->getEntityManager();
     $class = $this->getPagerClass();
 
     return new $class($em, $model, $this->getPagerMaxPerPage());

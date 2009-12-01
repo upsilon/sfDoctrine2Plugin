@@ -1,22 +1,22 @@
 <?php
 
 /**
- * ModelsUser form.
+ * EntitiesUser form.
  *
  * @package    test
  * @subpackage form
  * @author     Your name here
  * @version    SVN: $Id$
  */
-class ModelsUserForm extends BaseModelsUserForm
+class EntitiesUserForm extends BaseEntitiesUserForm
 {
   public function configure()
   {
-    $profile = $this->object->profile ? $this->object->profile:new \Models\Profile();
+    $profile = $this->object->profile ? $this->object->profile:new \Entities\Profile();
     $this->object->profile = $profile;
     $profile->user = $this->object;
 
-    $profileForm = new ModelsProfileForm($this->em, $profile);
+    $profileForm = new EntitiesProfileForm($this->em, $profile);
     $profileForm->useFields(array('firstName', 'lastName'));
     unset($profileForm['id']);
 
