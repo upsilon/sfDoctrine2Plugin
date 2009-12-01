@@ -23,7 +23,7 @@ class sfDoctrineSqlLogger implements Doctrine\DBAL\Logging\SqlLogger
    */
   static public function fixParams($params)
   {
-    foreach ($params as $key => $param)
+    foreach ((array) $params as $key => $param)
     {
       if (strlen($param) >= 255)
       {
