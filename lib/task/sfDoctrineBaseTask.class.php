@@ -56,7 +56,12 @@ abstract class sfDoctrineBaseTask extends sfBaseTask
     $printer = new sfDoctrineCliPrinter();
     $printer->setFormatter($this->formatter);
 
-    $cli = new \Doctrine\ORM\Tools\Cli\CliController();
+    $this->databaseManager = new sfDatabaseManager($this->configuration);
+
+    $config = new \Doctrine\Common\Cli\Configuration;
+    $config->setAttribute("em", $this->getEntityManager());
+
+    $cli = new \Doctrine\Common\Cli\CliController($config);
     $cli->run($args);
   }
 
