@@ -76,6 +76,7 @@ EOF;
         $this->logSection('doctrine', sprintf('Dropped database for connection named: "%s"', $name));
       } catch (Exception $e) {
         $this->logSection('doctrine', sprintf('Could not drop database for connection named: "%s". Error: '.$e->getMessage(), $name));
+        return 1;
       }
     }
   }

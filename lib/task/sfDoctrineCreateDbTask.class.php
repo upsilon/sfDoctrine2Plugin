@@ -66,6 +66,8 @@ EOF;
         $this->logSection('doctrine', sprintf('Created database for connection named: "%s"', $name));
       } catch (Exception $e) {
         $this->logSection('doctrine', sprintf('Could not create database for connection named: "%s". Error: '.$e->getMessage(), $name));
+        $tmpConnection->close();
+        return 1;
       }
   
       $tmpConnection->close();
