@@ -57,7 +57,7 @@ class sfDoctrineDatabase extends sfDatabase
     }
     $paths = array_unique($paths);
 
-    $config->setMetadataDriverImpl(new YamlDriver($paths, YamlDriver::PRELOAD));
+    $config->setMetadataDriverImpl(new YamlDriver($paths));
     $config->setProxyDir(sfConfig::get('sf_lib_dir') . '/Proxies');
     $config->setProxyNamespace('Proxies');
 
