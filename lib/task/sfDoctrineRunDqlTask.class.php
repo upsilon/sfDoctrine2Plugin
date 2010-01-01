@@ -63,6 +63,6 @@ EOF;
       $args[] = '--depth='.$options['depth'];
     }
 
-    $this->callDoctrineCli('run-dql', $args);
+    $this->callDoctrineCli('Orm:run-dql', $args);
   }
 }

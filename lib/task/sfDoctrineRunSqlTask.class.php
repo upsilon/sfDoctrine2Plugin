@@ -68,6 +68,6 @@ EOF;
       $args[] = '--depth='.$options['depth'];
     }
 
-    $this->callDoctrineCli('run-sql', $args);
+    $this->callDoctrineCli('Dbal:run-sql', $args);
   }
 }

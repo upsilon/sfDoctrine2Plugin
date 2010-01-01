@@ -56,6 +56,6 @@ EOF;
     $options['create'] = true;
     $args = $this->prepareDoctrineCliArguments($options, $keys);
 
-    $this->callDoctrineCli('schema-tool', $args);
+    $this->callDoctrineCli('Orm:schema-tool', $args);
   }
 }

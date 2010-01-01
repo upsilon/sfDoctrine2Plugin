@@ -65,6 +65,6 @@ EOF;
     }
     $args = $this->prepareDoctrineCliArguments($options, $keys);
 
-    $this->callDoctrineCli('convert-mapping', $args, $em);
+    $this->callDoctrineCli('Orm:convert-mapping', $args, $em);
   }
 }
