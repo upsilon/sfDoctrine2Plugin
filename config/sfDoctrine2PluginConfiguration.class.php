@@ -21,7 +21,7 @@ class sfDoctrine2PluginConfiguration extends sfPluginConfiguration
 {
   public function initialize()
   {
-	  sfConfig::set('sf_orm', 'doctrine');
+    sfConfig::set('sf_orm', 'doctrine');
 
     if (!sfConfig::get('sf_admin_module_web_dir'))
     {
@@ -81,51 +81,51 @@ class sfDoctrine2PluginConfiguration extends sfPluginConfiguration
       $event->setReturnValue($database->getEntityManager());
 
       return true;
-		}
-		else if ($method == 'getEntityManagerFor')
-		{
-		  $entityName = $args[0];
-		  if (is_object($entityName))
-		  {
-		    $entityName = get_class($entityName);
-		  }
-			$databaseManager = $actions->getContext()->getDatabaseManager();
-      $names = $databaseManager->getNames();
-			foreach ($names as $name)
-			{
-				$em = $databaseManager->getDatabase($name)->getEntityManager();
-				$cmf = $em->getMetadataFactory();
-				if ($cmf->hasMetadataFor($entityName))
-				{
-					$event->setReturnValue($em);
-					return true;
-				}
-			}
-			return false;
     }
-		else if ($method == 'getMetadataFor')
-		{
-		  $entityName = $args[0];
-		  if (is_object($entityName))
-		  {
-		    $entityName = get_class($entityName);
-		  }
-			$databaseManager = $actions->getContext()->getDatabaseManager();
+    else if ($method == 'getEntityManagerFor')
+    {
+      $entityName = $args[0];
+      if (is_object($entityName))
+      {
+        $entityName = get_class($entityName);
+      }
+      $databaseManager = $actions->getContext()->getDatabaseManager();
       $names = $databaseManager->getNames();
-			foreach ($names as $name)
-			{
-				$em = $databaseManager->getDatabase($name)->getEntityManager();
-				$cmf = $em->getMetadataFactory();
-				if ($cmf->hasMetadataFor($entityName))
-				{
-					$event->setReturnValue($cmf->getMetadataFor($entityName));
-					return true;
-				}
-			}
-			return false;
-		}
-		else
-		{
+      foreach ($names as $name)
+      {
+        $em = $databaseManager->getDatabase($name)->getEntityManager();
+        $cmf = $em->getMetadataFactory();
+        if ($cmf->hasMetadataFor($entityName))
+        {
+          $event->setReturnValue($em);
+          return true;
+        }
+      }
+      return false;
+    }
+    else if ($method == 'getMetadataFor')
+    {
+      $entityName = $args[0];
+      if (is_object($entityName))
+      {
+        $entityName = get_class($entityName);
+      }
+      $databaseManager = $actions->getContext()->getDatabaseManager();
+      $names = $databaseManager->getNames();
+      foreach ($names as $name)
+      {
+        $em = $databaseManager->getDatabase($name)->getEntityManager();
+        $cmf = $em->getMetadataFactory();
+        if ($cmf->hasMetadataFor($entityName))
+        {
+          $event->setReturnValue($cmf->getMetadataFor($entityName));
+          return true;
+        }
+      }
+      return false;
+    }
+    else
+    {
       return false;
     }
   }
