@@ -93,7 +93,7 @@ class sfValidatorDoctrineUnique extends sfValidatorSchema
       $qb->setParameter($i, $values[$column]);
     }
 
-    $object = $qb->setMaxResults(1)->getQuery()->execute();
+    $object = current($qb->setMaxResults(1)->getQuery()->execute());
 
     // if no object or if we're updating the object, it's ok
     if (!$object || $this->isUpdate($object, $values))
@@ -123,15 +123,17 @@ class sfValidatorDoctrineUnique extends sfValidatorSchema
    */
   protected function isUpdate($object, $values)
   {
+    $primaryKeyVals = $this->em->getClassMetadata($this->getOption("model"))->getColumnValues($object, $this->getPrimaryKeys());
+    $primaryKeyValArray = array_combine($this->getPrimaryKeys(), $primaryKeyVals);
+
     // check each primary key column
     foreach ($this->getPrimaryKeys() as $column)
     {
-      if (!isset($values[$column]) || $object->$column != $values[$column])
+      if (!isset($values[$column]) ||  $primaryKeyValArray[$column] != $values[$column])
       {
         return false;
       }
     }
-
     return true;
   }
 
