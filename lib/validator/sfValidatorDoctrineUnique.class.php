@@ -20,15 +20,16 @@
  * @subpackage doctrine
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @author     Jonathan H. Wage <jonwage@gmail.com>
+ * @author     Russell Flynn    <russ@eatmymonkeydust.com>
  * @version    SVN: $Id: sfValidatorDoctrineUnique.class.php 8807 2008-05-06 14:12:28Z fabien $
  */
 class sfValidatorDoctrineUnique extends sfValidatorSchema
 {
-	protected $em;
+  protected $em;
 
   public function __construct(\Doctrine\ORM\EntityManager $em, $options = array(), $messages = array())
   {
-		$this->em = $em;
+    $this->em = $em;
     parent::__construct(null, $options, $messages);
   }
 
@@ -64,7 +65,7 @@ class sfValidatorDoctrineUnique extends sfValidatorSchema
   protected function doClean($values)
   {
     $originalValues = $values;
-    $table = Doctrine::getTable($this->getOption('model'));
+
     if (!is_array($this->getOption('column')))
     {
       $this->setOption('column', array($this->getOption('column')));
@@ -78,20 +79,21 @@ class sfValidatorDoctrineUnique extends sfValidatorSchema
       $values = array($columns[0] => $values);
     }
 
-    $q = Doctrine::getTable($this->getOption('model'))->createQuery('a');
+    $qb = $this->em->createQueryBuilder()->select('a')->from($this->getOption('model'), 'a');
+    $i  = 0;
     foreach ($this->getOption('column') as $column)
     {
-      $colName = $table->getColumnName($column);
       if (!array_key_exists($column, $values))
       {
-        // one of the column has be removed from the form
+        // one of the columns has be removed from the form
         return $originalValues;
       }
 
-      $q->addWhere('a.' . $colName . ' = ?', $values[$column]);
+      $qb->andWhere('a.' . $column . ' = ?'.++$i);
+      $qb->setParameter($i, $values[$column]);
     }
 
-    $object = $q->fetchOne();
+    $object = $qb->setMaxResults(1)->getQuery()->execute();
 
     // if no object or if we're updating the object, it's ok
     if (!$object || $this->isUpdate($object, $values))
@@ -114,12 +116,12 @@ class sfValidatorDoctrineUnique extends sfValidatorSchema
   /**
    * Returns whether the object is being updated.
    *
-   * @param BaseObject  A Doctrine object
-   * @param array       An array of values
+   * @param object A compatable object
+   * @param array  An array of values
    *
-   * @param Boolean     true if the object is being updated, false otherwise
+   * @param Boolean true if the object is being updated, false otherwise
    */
-  protected function isUpdate(Doctrine_Record $object, $values)
+  protected function isUpdate($object, $values)
   {
     // check each primary key column
     foreach ($this->getPrimaryKeys() as $column)
@@ -142,8 +144,9 @@ class sfValidatorDoctrineUnique extends sfValidatorSchema
   {
     if (null === $this->getOption('primary_key'))
     {
-      $primaryKeys = Doctrine::getTable($this->getOption('model'))->getIdentifier();
-      $this->setOption('primary_key', $primaryKeys);
+      $primaryKeyColumns = $this->em->getClassMetadata($this->getOption("model"))->getIdentifier();
+
+      $this->setOption('primary_key', $primaryKeyColumns);
     }
 
     if (!is_array($this->getOption('primary_key')))
