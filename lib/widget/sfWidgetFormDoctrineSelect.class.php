@@ -20,14 +20,14 @@
  */
 class sfWidgetFormDoctrineSelect extends sfWidgetFormSelect
 {
-	protected $em;
+  protected $em;
 
   /**
    * @see sfWidget
    */
   public function __construct(\Doctrine\ORM\EntityManager $em, $options = array(), $attributes = array())
   {
-		$this->em = $em;
+    $this->em = $em;
     $options['choices'] = new sfCallable(array($this, 'getChoices'));
 
     parent::__construct($options, $attributes);
@@ -89,7 +89,7 @@ class sfWidgetFormDoctrineSelect extends sfWidgetFormSelect
       $qb->orderBy("$a." . $order[0] . ' ' . $order[1]);
     }
 
-		$q = $qb->getQuery();
+    $q = $qb->getQuery();
     $objects = $q->execute();
     $method = $this->getOption('method');
     foreach ($objects as $object)
