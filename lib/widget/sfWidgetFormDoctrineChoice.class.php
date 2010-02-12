@@ -20,14 +20,14 @@
  */
 class sfWidgetFormDoctrineChoice extends sfWidgetFormChoice
 {
-	protected $em;
+  protected $em;
 
   /**
    * @see sfWidget
    */
   public function __construct(\Doctrine\ORM\EntityManager $em, $options = array(), $attributes = array())
   {
-		$this->em = $em;
+    $this->em = $em;
     $options['choices'] = array();
 
     parent::__construct($options, $attributes);
@@ -38,17 +38,17 @@ class sfWidgetFormDoctrineChoice extends sfWidgetFormChoice
    *
    * Available options:
    *
-   *  * model:        The model class (required)
-   *  * add_empty:    Whether to add a first empty value or not (false by default)
-   *                  If the option is not a Boolean, the value will be used as the text value
-   *  * method:       The method to use to display object values (__toString by default)
-   *  * key_method:   The method to use to display the object keys (getPrimaryKey by default)
-   *  * order_by:     An array composed of two fields:
-   *                    * The column to order by the results (must be in the PhpName format)
-   *                    * asc or desc
-   *  * query:        A query to use when retrieving objects
-   *  * multiple:     true if the select tag must allow multiple selections
-   *  * table_method: A method to return either a query, collection or single object
+   *  * model:             The model class (required)
+   *  * add_empty:         Whether to add a first empty value or not (false by default)
+   *                       If the option is not a Boolean, the value will be used as the text value
+   *  * method:            The method to use to display object values (__toString by default)
+   *  * key_method:        The method to use to display the object keys (getPrimaryKey by default)
+   *  * order_by:          An array composed of two fields:
+   *                        * The column to order by the results (must be in the PhpName format)
+   *                        * asc or desc
+   *  * query:             A query to use when retrieving objects
+   *  * multiple:          true if the select tag must allow multiple selections
+   *  * repository_method: A method to return either a query, collection or single object
    *
    * @see sfWidgetFormSelect
    */
@@ -61,7 +61,7 @@ class sfWidgetFormDoctrineChoice extends sfWidgetFormChoice
     $this->addOption('order_by', null);
     $this->addOption('query', null);
     $this->addOption('multiple', false);
-    $this->addOption('table_method', null);
+    $this->addOption('repository_method', null);
 
     parent::configure($options, $attributes);
   }
@@ -86,7 +86,7 @@ class sfWidgetFormDoctrineChoice extends sfWidgetFormChoice
       {
         $qb->addOrderBy($order[0], $order[1]);
       }
-			$query = $qb->getQuery();
+      $query = $qb->getQuery();
       $objects = $query->execute();
     }
     else
@@ -96,18 +96,18 @@ class sfWidgetFormDoctrineChoice extends sfWidgetFormChoice
 
       if ($results instanceof \Doctrine\ORM\QueryBuilder)
       {
-				$qb = $results;
-				$query = $qb->getQuery();
+        $qb = $results;
+        $query = $qb->getQuery();
         $objects = $query->execute();
       }
       else if ($results instanceof \Doctrine\ORM\Query)
       {
         $objects = $query->execute();
       }
-			else if ($results)
-			{
-				$objects = $results;
-			}
+      else if ($results)
+      {
+        $objects = $results;
+      }
       else
       {
         $objects = array();
