@@ -80,6 +80,11 @@ class sfDoctrineDatabase extends sfDatabase
 
     $this->em = \Doctrine\ORM\EntityManager::create($connectionOptions, $config);
 
+    if (method_exists($configuration, 'configureEntityManager'))
+    {
+      $configuration->configureEntityManager($this->em);
+    }
+
     ActiveEntity::setEntityManager($this->em);
   }
 
