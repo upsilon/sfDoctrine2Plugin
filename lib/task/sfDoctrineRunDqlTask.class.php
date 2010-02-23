@@ -32,6 +32,8 @@ class sfDoctrineRunDqlTask extends sfDoctrineBaseTask
       new sfCommandOption('dql', null, sfCommandOption::PARAMETER_REQUIRED, 'The SQL query to execute'),
       new sfCommandOption('file', null, sfCommandOption::PARAMETER_REQUIRED, 'The path to a SQL file to execute'),
       new sfCommandOption('depth', null, sfCommandOption::PARAMETER_REQUIRED, 'The depth to allow the data to output to'),
+      new sfCommandOption('limit', null, sfCommandOption::PARAMETER_REQUIRED, 'Limit the returned results'),
+      new sfCommandOption('hydrate', null, sfCommandOption::PARAMETER_OPTIONAL, 'The hydration mode (object/array/scalar)', "object"),
     ));
 
     $this->aliases = array();
@@ -42,7 +44,7 @@ class sfDoctrineRunDqlTask extends sfDoctrineBaseTask
     $this->detailedDescription = <<<EOF
 The [doctrine:run-dql|INFO] task executes a DQL:
 
-  [./symfony doctrine:run-dql --dql="SELECT u FROM User"|INFO]
+  [./symfony doctrine:run-dql --dql="SELECT u FROM User u"|INFO]
 
 EOF;
   }
@@ -61,6 +63,16 @@ EOF;
     if (isset($options['depth']))
     {
       $args[] = '--depth='.$options['depth'];
+    }
+
+    if (isset($options["limit"]))
+    {
+      $args[] = '--limit='.$options["limit"];
+    }
+
+    if (isset($options["hydrate"]))
+    {
+      $args[] = '--hydrate='.$options["hydrate"];
     }
 
     $this->callDoctrineCli('Orm:run-dql', $args);
