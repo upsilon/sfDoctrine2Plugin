@@ -14,6 +14,7 @@
  * @subpackage doctrine
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @author     Jonathan H. Wage <jonwage@gmail.com>
+ * @author     Russell Flynn <russ@eatmymonkeydust.com>
  * @version    SVN: $Id: sfFormDoctrine.class.php 7845 2008-03-12 22:36:14Z fabien $
  */
 
@@ -26,6 +27,7 @@
  * @subpackage form
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @author     Jonathan H. Wage <jonwage@gmail.com>
+ * @author     Russell Flynn <russ@eatmymonkeydust.com>
  * @version    SVN: $Id: sfFormDoctrine.class.php 7845 2008-03-12 22:36:14Z fabien $
  */
 abstract class sfFormDoctrine extends sfFormObject
@@ -33,7 +35,7 @@ abstract class sfFormDoctrine extends sfFormObject
   protected
     $isNew  = true,
     $object = null,
-		$em;
+    $em;
 
   /**
    * Constructor.
@@ -46,21 +48,23 @@ abstract class sfFormDoctrine extends sfFormObject
    */
   public function __construct(\Doctrine\ORM\EntityManager $em, $object = null, $options = array(), $CSRFSecret = null)
   {
-		$this->em = $em;
+    $this->em = $em;
     $class = $this->getModelName();
-    if (!$object)
+    if ($object)
     {
-      $this->object = new $class();
-    }
-    else
-    {
-      if (!$object instanceof $class)
+      if (!($object instanceof $class))
       {
         throw new sfException(sprintf('The "%s" form only accepts a "%s" object.', get_class($this), $class));
       }
 
       $this->object = $object;
-      $this->isNew = !$this->object->exists();
+
+      $id = $this->em->getMetadataFactory()->getMetadataFor(get_class($object))->getIdentifierValues($object);
+      $this->isNew = ($this->em->contains($object) && ! empty($id)) ? true : false;
+    }
+    else
+    {
+      $this->object = new $class();
     }
 
     parent::__construct(array(), $options, $CSRFSecret);
@@ -75,13 +79,13 @@ abstract class sfFormDoctrine extends sfFormObject
    */
   public function getConnection()
   {
-    return $this->em->getEntityManager();
+    return $this->em->getConnection();
   }
 
-	public function getEntityManager()
-	{
-		return $this->em;
-	}
+  public function getEntityManager()
+  {
+    return $this->em;
+  }
 
   /**
    * Returns true if the current form embeds a new object.
@@ -90,8 +94,6 @@ abstract class sfFormDoctrine extends sfFormObject
    */
   public function isNew()
   {
-    $this->isNew = !$this->object->exists();
-
     return $this->isNew;
   }
 
@@ -103,7 +105,7 @@ abstract class sfFormDoctrine extends sfFormObject
    */
   public function embedI18n($cultures, $decorator = null)
   {
-		throw new sfException('Not implemented');
+    throw new sfException('Not implemented');
     if (!$this->isI18n())
     {
       throw new sfException(sprintf('The model "%s" is not internationalized.', $this->getModelName()));
@@ -112,6 +114,8 @@ abstract class sfFormDoctrine extends sfFormObject
     $class = $this->getI18nFormClass();
     foreach ($cultures as $culture)
     {
+      // FIXME: When this method gets implemented, remember to update it for
+      // not-active-record
       $i18nObject = $this->object->Translation[$culture];
       $i18n = new $class($i18nObject);
       unset($i18n['id'], $i18n['lang']);
@@ -135,6 +139,13 @@ abstract class sfFormDoctrine extends sfFormObject
    */
   public function embedRelation($relationName, $formClass = null, $formArgs = array())
   {
+    // FIXME: Where exactly is getTable() declared?
+    //        It triggers __call() which retrieves a property called $table,
+    //        which doesn't seem to be declared anywhere so it triggers __get()
+    //        which then again tries to call getTable() (if it exists) or
+    //        returns $this->table, which eventually doesn't exists?
+    //        I don't think this is works
+    throw new sfException('Not implemented');
     $relation = $this->object->getTable()->getRelation($relationName);
 
     if ($relation->getType() !== Doctrine_Relation::MANY)
@@ -215,7 +226,7 @@ abstract class sfFormDoctrine extends sfFormObject
 
     try
     {
-			$con = $em->getConnection();
+      $con = $em->getConnection();
       $con->beginTransaction();
 
       $this->doSave($em);
@@ -266,7 +277,21 @@ abstract class sfFormDoctrine extends sfFormObject
    */
   protected function doUpdateObject($values)
   {
-    $this->object->fromArray($values);
+
+    $md = $this->em->getMetadataFactory()->getMetadataFor($this->getModelName());
+    $obj = $this->getObject();
+    foreach($values as $key => $value)
+    {
+      $setMethod = "set".$key;
+      if (method_exists($obj, $setMethod) && !in_array($key, $md->getIdentifier()))
+      {
+        call_user_func_array(array($obj, $setMethod), array($value));
+      }
+      else
+      {
+        $md->setFieldValue($obj, $key, $value);
+      }
+    }
   }
 
   /**
@@ -337,7 +362,7 @@ abstract class sfFormDoctrine extends sfFormObject
         if ($this->validatorSchema[$field] instanceof sfValidatorFile)
         {
           $values[$field] = $this->processUploadedFile($field, null, $valuesToProcess);
-        }          
+        }
       }
     }
 
@@ -416,7 +441,7 @@ abstract class sfFormDoctrine extends sfFormObject
 
     $this->updateObject();
 
-    $this->object->save($em);
+    $em->persist($this->object);
 
     // embedded forms
     $this->saveEmbeddedForms($em);
@@ -446,7 +471,7 @@ abstract class sfFormDoctrine extends sfFormObject
     {
       if ($form instanceof sfFormDoctrine)
       {
-        $form->getObject()->save($em);
+        $em->persist($form->getObject());
         $form->saveEmbeddedForms($em);
       }
       else
@@ -462,13 +487,14 @@ abstract class sfFormDoctrine extends sfFormObject
   protected function updateDefaultsFromObject()
   {
     // update defaults for the main object
+    $objdefault = $this->convertObjectToArray();
     if ($this->isNew())
     {
-      $this->setDefaults(array_merge($this->object->toArray(), $this->getDefaults()));
+      $this->setDefaults(array_merge($objdefault, $this->getDefaults()));
     }
     else
     {
-      $this->setDefaults(array_merge($this->getDefaults(), $this->object->toArray()));
+      $this->setDefaults(array_merge($this->getDefaults(), $objdefault));
     }
 
     $defaults = $this->getDefaults();
@@ -483,6 +509,25 @@ abstract class sfFormDoctrine extends sfFormObject
     }
 
     $this->setDefaults($defaults);
+  }
+
+  protected function getObjectValue($fields)
+  {
+    $md = $this->em->getMetadataFactory()->getMetadataFor($this->getModelName());
+    $values = $md->getColumnsValue((array)$fields);
+    if (is_array($fields))
+    {
+      return $values;
+    }
+    return current($values);
+  }
+
+  protected function convertObjectToArray()
+  {
+    $md = $this->em->getMetadataFactory()->getMetadataFor($this->getModelName());
+    $values = $md->getColumnValues($this->getObject(), array_keys($md->fieldNames));
+
+    return array_combine($md->fieldNames, $values);
   }
 
   /**
@@ -515,7 +560,7 @@ abstract class sfFormDoctrine extends sfFormObject
 
     if (!$values[$field])
     {
-      return $this->object->$field;
+      return $this->getObjectValue($field);
     }
 
     // we need the base directory
@@ -541,9 +586,10 @@ abstract class sfFormDoctrine extends sfFormObject
       throw new LogicException(sprintf('You cannot remove the current file for field "%s" as the field is not a file.', $field));
     }
 
-    if (($directory = $this->validatorSchema[$field]->getOption('path')) && is_file($directory.$this->object->$field))
+    $fieldValue = $this->getObjectValue($field);
+    if (($directory = $this->validatorSchema[$field]->getOption('path')) && is_file($directory.$fieldValue))
     {
-      unlink($directory.$this->object->$field);
+      unlink($directory.$fieldValue);
     }
   }
 
