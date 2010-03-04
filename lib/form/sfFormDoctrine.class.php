@@ -488,6 +488,7 @@ abstract class sfFormDoctrine extends sfFormObject
   {
     // update defaults for the main object
     $objdefault = $this->convertObjectToArray();
+
     if ($this->isNew())
     {
       $this->setDefaults(array_merge($objdefault, $this->getDefaults()));
@@ -526,8 +527,19 @@ abstract class sfFormDoctrine extends sfFormObject
   {
     $md = $this->em->getMetadataFactory()->getMetadataFor($this->getModelName());
     $values = $md->getColumnValues($this->getObject(), array_keys($md->fieldNames));
+    $valueArray = array_combine($md->fieldNames, $values);
+    $obj = $this->getObject();
 
-    return array_combine($md->fieldNames, $values);
+    foreach($valueArray as $key => $value)
+    {
+      $getMethod = "get".$key;
+      if (method_exists($obj, $getMethod) && is_callable(array($obj, $getMethod)))
+      {
+        $valueArray[$key] = call_user_func(array($obj, $getMethod));
+      }
+    }
+
+    return $valueArray;
   }
 
   /**
