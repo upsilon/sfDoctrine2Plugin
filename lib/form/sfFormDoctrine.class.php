@@ -94,8 +94,9 @@ abstract class sfFormDoctrine extends sfFormObject
     if (is_null($this->isNew))
     {
       $id = $this->em->getMetadataFactory()->getMetadataFor(get_class($this->object))->getIdentifierValues($this->object);
-      $this->isNew = ($this->em->contains($this->object) && ! empty($id)) ? true : false;
+      $this->isNew = empty($id) ? true : false;
     }
+
     return $this->isNew;
   }
 
