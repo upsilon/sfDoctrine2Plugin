@@ -33,7 +33,7 @@
 abstract class sfFormDoctrine extends sfFormObject
 {
   protected
-    $isNew  = true,
+    $isNew  = null,
     $object = null,
     $em;
 
@@ -56,14 +56,11 @@ abstract class sfFormDoctrine extends sfFormObject
       {
         throw new sfException(sprintf('The "%s" form only accepts a "%s" object.', get_class($this), $class));
       }
-
       $this->object = $object;
-
-      $id = $this->em->getMetadataFactory()->getMetadataFor(get_class($object))->getIdentifierValues($object);
-      $this->isNew = ($this->em->contains($object) && ! empty($id)) ? true : false;
     }
     else
     {
+      $this->isNew  = true;
       $this->object = new $class();
     }
 
@@ -94,6 +91,11 @@ abstract class sfFormDoctrine extends sfFormObject
    */
   public function isNew()
   {
+    if (is_null($this->isNew))
+    {
+      $id = $this->em->getMetadataFactory()->getMetadataFor(get_class($this->object))->getIdentifierValues($this->object);
+      $this->isNew = ($this->em->contains($this->object) && ! empty($id)) ? true : false;
+    }
     return $this->isNew;
   }
 
