@@ -518,7 +518,13 @@ abstract class sfFormDoctrine extends sfFormObject
   protected function getObjectValue($fields)
   {
     $md = $this->em->getMetadataFactory()->getMetadataFor($this->getModelName());
-    $values = $md->getColumnsValue((array)$fields);
+    $values = array();
+
+    foreach ((array) $fields as $aField)
+    {
+      $values[] = $md->reflFields[$aField]->getValue($this->getObject());
+    }
+
     if (is_array($fields))
     {
       return $values;
@@ -528,10 +534,8 @@ abstract class sfFormDoctrine extends sfFormObject
 
   protected function convertObjectToArray()
   {
-    $md = $this->em->getMetadataFactory()->getMetadataFor($this->getModelName());
-    $values = $md->getColumnValues($this->getObject(), array_keys($md->fieldNames));
-    $valueArray = array_combine($md->fieldNames, $values);
     $obj = $this->getObject();
+    $valueArray = $this->getObjectColumnValues();
 
     foreach($valueArray as $key => $value)
     {
@@ -541,6 +545,26 @@ abstract class sfFormDoctrine extends sfFormObject
         $valueArray[$key] = call_user_func(array($obj, $getMethod));
       }
     }
+
+    return $valueArray;
+  }
+
+  /**
+   * Get the property values of the form object for all properties mapped
+   * to database columns
+   *
+   * @return array fieldname => $value
+   */
+  protected function getObjectColumnValues()
+  {
+    $md = $this->em->getMetadataFactory()->getMetadataFor($this->getModelName());
+    $columns = array_keys($md->fieldNames);
+
+    $values = array();
+    foreach ($columns as $column) {
+      $values[] = $md->reflFields[$md->fieldNames[$column]]->getValue($this->getObject());
+    }
+    $valueArray = array_combine($md->fieldNames, $values);
 
     return $valueArray;
   }
