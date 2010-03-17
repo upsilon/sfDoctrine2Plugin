@@ -46,6 +46,10 @@ class sfDoctrine2PluginConfiguration extends sfPluginConfiguration
     $classLoader->setBasePath(__DIR__.'/../lib/vendor/doctrine');
     $classLoader->register();
 
+    $classLoader = new \Doctrine\Common\IsolatedClassLoader('Entities');
+    $classLoader->setBasePath(sfConfig::get('sf_lib_dir').'/entities/doctrine');
+    $classLoader->register();
+
     $this->dispatcher->connect('component.method_not_found', array($this, 'componentMethodNotFound'));
   }
 

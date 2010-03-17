@@ -55,6 +55,13 @@ EOF;
     $options['update'] = true;
     $args = $this->prepareDoctrineCliArguments($options, $keys);
 
-    $this->callDoctrineCli('Orm:schema-tool', $args);
+    $retval = $this->callDoctrineCli('Orm:schema-tool', $args);
+
+    if ($retval === true)
+    {
+      return 0;
+    }
+
+    return 1;
   }
 }

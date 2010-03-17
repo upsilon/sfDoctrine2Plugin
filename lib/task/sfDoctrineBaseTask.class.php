@@ -63,7 +63,7 @@ abstract class sfDoctrineBaseTask extends sfBaseTask
     $config->setAttribute("em", $em);
 
     $cli = new \Doctrine\Common\Cli\CliController($config);
-    $cli->run($args);
+    return $cli->run($args);
   }
 
   protected function getEntityManager($name = null)
