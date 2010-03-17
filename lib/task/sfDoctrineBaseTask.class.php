@@ -43,8 +43,10 @@ abstract class sfDoctrineBaseTask extends sfBaseTask
     return $args;
   }
 
-  protected function callDoctrineCli($task, $arguments = array(), $em = true)
+  protected function callDoctrineCli($task, $arguments = array())
   {
+    $this->databaseManager = new sfDatabaseManager($this->configuration);
+    $em = $this->getEntityManager();
     $args = array(
       './doctrine',
       $task
@@ -52,14 +54,13 @@ abstract class sfDoctrineBaseTask extends sfBaseTask
 
     $args = array_merge($args, $arguments);
     $args[] = '--config='.__DIR__.'/../../config/cli-config.php';
+    $args[] = '--class-dir=' . join(",", $em->getConfiguration()->getMetadataDriverImpl()->getPaths());
 
     $printer = new sfDoctrineCliPrinter();
     $printer->setFormatter($this->formatter);
 
-    $this->databaseManager = new sfDatabaseManager($this->configuration);
-
     $config = new \Doctrine\Common\Cli\Configuration;
-    $config->setAttribute("em", $this->getEntityManager());
+    $config->setAttribute("em", $em);
 
     $cli = new \Doctrine\Common\Cli\CliController($config);
     $cli->run($args);
