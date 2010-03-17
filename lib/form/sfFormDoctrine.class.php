@@ -286,7 +286,7 @@ abstract class sfFormDoctrine extends sfFormObject
     foreach($values as $key => $value)
     {
       $setMethod = "set".$key;
-      if (method_exists($obj, $setMethod) && !in_array($key, $md->getIdentifier()))
+      if (method_exists($obj, $setMethod) && !in_array($key, $md->getIdentifierFieldNames()))
       {
         call_user_func_array(array($obj, $setMethod), array($value));
       }
