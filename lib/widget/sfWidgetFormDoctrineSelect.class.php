@@ -81,7 +81,7 @@ class sfWidgetFormDoctrineSelect extends sfWidgetFormSelect
 
     $a = $this->getOption('alias');
     $qb = null === $this->getOption('query')
-        ? $this->em->createQueryBuilder()->from($this->getOption('model')), $a)
+        ? $this->em->createQueryBuilder()->from($this->getOption('model'), $a)
         : $this->getOption('query');
 
     if ($order = $this->getOption('order_by'))
