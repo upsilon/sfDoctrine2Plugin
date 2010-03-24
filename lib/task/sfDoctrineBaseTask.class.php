@@ -63,7 +63,7 @@ abstract class sfDoctrineBaseTask extends sfBaseTask
     $config = new \Doctrine\Common\CLI\Configuration;
     $config->setAttribute("em", $em);
 
-    $cli = new \Doctrine\Common\CLI\CliController($config, $printer);
+    $cli = new \Doctrine\Common\CLI\CLIController($config, $printer);
     return $cli->run($args);
   }
 
