@@ -15,6 +15,7 @@
  * @package    symfony
  * @subpackage doctrine
  * @author     Jonathan H. Wage <jonwage@gmail.com>
+ * @author     Russell Flynn <russ@eatmymonkeydust.com>
  * @version    SVN: $Id: sfDoctrineBaseTask.class.php 15865 2009-02-28 03:34:26Z Jonathan.Wage $
  */
 abstract class sfDoctrineBaseTask extends sfBaseTask
@@ -59,10 +60,10 @@ abstract class sfDoctrineBaseTask extends sfBaseTask
     $printer = new sfDoctrineCliPrinter();
     $printer->setFormatter($this->formatter);
 
-    $config = new \Doctrine\Common\Cli\Configuration;
+    $config = new \Doctrine\Common\CLI\Configuration;
     $config->setAttribute("em", $em);
 
-    $cli = new \Doctrine\Common\Cli\CliController($config, $printer);
+    $cli = new \Doctrine\Common\CLI\CliController($config, $printer);
     return $cli->run($args);
   }
 
