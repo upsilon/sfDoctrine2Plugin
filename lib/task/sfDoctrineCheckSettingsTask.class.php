@@ -46,6 +46,6 @@ EOF;
    */
   protected function execute($arguments = array(), $options = array())
   {
-    $this->callDoctrineCli('Orm:ensure-production-settings');
+    $this->callDoctrineCli('orm:ensure-production-settings');
   }
 }

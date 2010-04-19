@@ -1,29 +1,43 @@
 <?php
+use Symfony\Components\Console\Output\OutputInterface;
 
-use Doctrine\Common\CLI\Printers\AnsiColorPrinter;
-
-class sfDoctrineCliPrinter extends AnsiColorPrinter
+class sfDoctrineCliPrinter implements OutputInterface
 {
   protected $formatter;
+  protected $dispatcher;
 
   public function setFormatter($formatter)
   {
     $this->formatter = $formatter;
   }
 
-  public function write($message, $style = 'NONE')
+  public function setDispatcher($dispatcher)
   {
-    fwrite($this->_stream, $this->format($message, $style));
-    
+    $this->dispatcher = $dispatcher;
+  }
+
+  public function logSection($section, $message, $size = null, $style = 'INFO')
+  {
+    $this->dispatcher->notify(new sfEvent($this, 'command.log', array($this->formatter->formatSection($section, $message, $size, $style))));
+  }
+
+  /**
+   * Writes a message to the output.
+   *
+   * @param string|array $messages The message as an array of lines of a single string
+   * @param integer      $type     The type of output
+   */
+  public function write($messages, $type = 0)
+  {
+    $this->logSection("Doctrine", $messages);
     return $this;
   }
 
-  public function writeln($message, $style = 'NONE')
+  public function setVerbosity($level)
   {
-    $messages = explode("\n", $message);
-    foreach ($messages as $message)
-    {
-      $this->write($this->formatter->formatSection('doctrine', $this->format($message.PHP_EOL, $style)));
-    }
+  }
+
+  public function setDecorated($decorated)
+  {
   }
 }

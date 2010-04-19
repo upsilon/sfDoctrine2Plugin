@@ -51,10 +51,9 @@ EOF;
    */
   protected function execute($arguments = array(), $options = array())
   {
-    $keys = array('dump-sql', 'drop');
-    $options['drop'] = true;
+    $keys = array('dump-sql');
     $args = $this->prepareDoctrineCliArguments($options, $keys);
 
-    $this->callDoctrineCli('Orm:schema-tool', $args);
+    return $this->callDoctrineCli('orm:schema-tool:drop', $args);
   }
 }

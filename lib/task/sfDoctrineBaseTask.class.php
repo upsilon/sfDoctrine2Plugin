@@ -20,6 +20,8 @@
  */
 abstract class sfDoctrineBaseTask extends sfBaseTask
 {
+  static protected $databaseManagers = array();
+
   protected function prepareDoctrineCliArguments(array $arguments, array $keys = array())
   {
     $args = array();
@@ -44,37 +46,75 @@ abstract class sfDoctrineBaseTask extends sfBaseTask
     return $args;
   }
 
+  protected function getCli()
+  {
+    $helperSet = new \Symfony\Components\Console\Helper\HelperSet(array(
+        'em' => new \Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper($this->getEntityManager()),
+        'db' => new \Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper($this->getEntityManager()->getConnection()),
+    ));
+
+    $cli = new \Symfony\Components\Console\Application('Doctrine Command Line Interface', Doctrine\Common\Version::VERSION);
+    $cli->setCatchExceptions(false);
+    $cli->setAutoExit(false);
+    $cli->setHelperSet($helperSet);
+    $cli->addCommands(array(
+      // DBAL Commands
+      new \Doctrine\DBAL\Tools\Console\Command\RunSqlCommand(),
+      new \Doctrine\DBAL\Tools\Console\Command\ImportCommand(),
+
+      // ORM Commands
+      new \Doctrine\ORM\Tools\Console\Command\ClearCache\MetadataCommand(),
+      new \Doctrine\ORM\Tools\Console\Command\ClearCache\ResultCommand(),
+      new \Doctrine\ORM\Tools\Console\Command\ClearCache\QueryCommand(),
+      new \Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand(),
+      new \Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand(),
+      new \Doctrine\ORM\Tools\Console\Command\SchemaTool\DropCommand(),
+      new \Doctrine\ORM\Tools\Console\Command\EnsureProductionSettingsCommand(),
+      new \Doctrine\ORM\Tools\Console\Command\ConvertDoctrine1SchemaCommand(),
+      new \Doctrine\ORM\Tools\Console\Command\GenerateRepositoriesCommand(),
+      new \Doctrine\ORM\Tools\Console\Command\GenerateEntitiesCommand(),
+      new \Doctrine\ORM\Tools\Console\Command\GenerateProxiesCommand(),
+      new \Doctrine\ORM\Tools\Console\Command\ConvertMappingCommand(),
+      new \Doctrine\ORM\Tools\Console\Command\RunDqlCommand(),
+    ));
+
+    return $cli;
+  }
+
   protected function callDoctrineCli($task, $arguments = array())
   {
-    $this->databaseManager = new sfDatabaseManager($this->configuration);
-    $em = $this->getEntityManager();
-    $args = array(
-      './doctrine',
-      $task
-    );
+    $this->initDBM();
 
+    $args = array($task);
     $args = array_merge($args, $arguments);
-    $args[] = '--config='.__DIR__.'/../../config/cli-config.php';
-    $args[] = '--class-dir=' . join(",", $em->getConfiguration()->getMetadataDriverImpl()->getPaths());
 
-    $printer = new sfDoctrineCliPrinter();
-    $printer->setFormatter($this->formatter);
+    $input = new \Symfony\Components\Console\Input\StringInput(join(" ", $args));
 
-    $config = new \Doctrine\Common\CLI\Configuration;
-    $config->setAttribute("em", $em);
+    $output = new sfDoctrineCliPrinter();
+    $output->setFormatter($this->formatter);
+    $output->setDispatcher($this->dispatcher);
 
-    $cli = new \Doctrine\Common\CLI\CLIController($config, $printer);
-    return $cli->run($args);
+    $cli = $this->getCli();
+    return $cli->run($input, $output);
+  }
+
+  protected function initDBM()
+  {
+    $hash = spl_object_hash($this->configuration);
+
+    if (!isset(self::$databaseManagers[$hash]))
+    {
+      self::$databaseManagers[$hash] = new sfDatabaseManager($this->configuration);
+    }
+
+    return self::$databaseManagers[$hash];
   }
 
   protected function getEntityManager($name = null)
   {
-    if (!isset($this->databaseManager))
-    {
-      throw new sfException('No $databaseManager property found.');
-    }
+    $databaseManager = $this->initDBM();
 
-    $names = $this->databaseManager->getNames();
+    $names = $databaseManager->getNames();
 
     if ($name !== null)
     {
@@ -85,9 +125,9 @@ abstract class sfDoctrineBaseTask extends sfBaseTask
                   'the database connection named: "%s"', $name)
         );
       }
-      $database = $this->databaseManager->getDatabase($name);
+      $database = $databaseManager->getDatabase($name);
     } else {
-      $database = $this->databaseManager->getDatabase(end($names));
+      $database = $databaseManager->getDatabase(end($names));
     }
 
     return $database->getEntityManager();

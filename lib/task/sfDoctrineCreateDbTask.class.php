@@ -49,7 +49,7 @@ EOF;
    */
   protected function execute($arguments = array(), $options = array())
   {
-    $databaseManager = new sfDatabaseManager($this->configuration);
+    $databaseManager = $this->initDBM();
     foreach ($databaseManager->getNames() as $name)
     {
       $database = $databaseManager->getDatabase($name);

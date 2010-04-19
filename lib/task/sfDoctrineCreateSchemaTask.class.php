@@ -52,10 +52,9 @@ EOF;
    */
   protected function execute($arguments = array(), $options = array())
   {
-    $keys = array('dump-sql', 'create');
-    $options['create'] = true;
-    $args = $this->prepareDoctrineCliArguments($options, $keys);
+    $keys = array('dump-sql');
+    $args = $this->prepareDoctrineCliArguments((array)$options, $keys);
 
-    $this->callDoctrineCli('Orm:schema-tool', $args);
+    return $this->callDoctrineCli('orm:schema-tool:create', $args);
   }
 }

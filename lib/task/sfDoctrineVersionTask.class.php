@@ -44,6 +44,6 @@ EOF;
    */
   protected function execute($arguments = array(), $options = array())
   {
-    $this->callDoctrineCli('Orm:version');
+    $this->callDoctrineCli('--version');
   }
 }

@@ -101,7 +101,7 @@ EOF;
 
     if (!isset($routesArray[$name]))
     {
-      $databaseManager = new sfDatabaseManager($this->configuration);
+      $databaseManager = $this->initDBM();
       $primaryKey = 'id';
       $module = $options['module'] ? $options['module'] : $name;
       $content = sprintf(<<<EOF

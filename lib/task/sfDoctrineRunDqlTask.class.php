@@ -75,6 +75,6 @@ EOF;
       $args[] = '--hydrate='.$options["hydrate"];
     }
 
-    $this->callDoctrineCli('Orm:run-dql', $args);
+    $this->callDoctrineCli('orm:run-dql', $args);
   }
 }

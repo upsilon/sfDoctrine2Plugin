@@ -75,7 +75,7 @@ EOF;
    */
   protected function execute($arguments = array(), $options = array())
   {
-    $databaseManager = new sfDatabaseManager($this->configuration);
+    $databaseManager = $this->initDBM();
     
     $properties = parse_ini_file(sfConfig::get('sf_config_dir').'/properties.ini', true);
 
@@ -97,7 +97,7 @@ EOF;
   {
     // generate module
     $tmpDir = sfConfig::get('sf_cache_dir').DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.md5(uniqid(rand(), true));
-    $databaseManager = new sfDatabaseManager($this->configuration);
+    $databaseManager = $this->initDBM();
 		$generatorManager = new sfGeneratorManager($this->configuration, $tmpDir);
     $generatorManager->generate('sfDoctrineGenerator', array(
       'model_class'           => $arguments['model'],

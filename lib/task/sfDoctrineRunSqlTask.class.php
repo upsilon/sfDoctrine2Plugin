@@ -53,21 +53,18 @@ EOF;
   protected function execute($arguments = array(), $options = array())
   {
     $args = array();
-    if (isset($options['sql']))
-    {
-      $args[] = '--sql='.$options['sql'];
-    }
-
-    if (isset($options['file']))
-    {
-      $args[] = '--file='.$options['file'];
-    }
 
     if (isset($options['depth']))
     {
       $args[] = '--depth='.$options['depth'];
     }
 
-    $this->callDoctrineCli('Dbal:run-sql', $args);
+    if (isset($options['sql']))
+    {
+      $args[] = '"' . $options['sql'] . '"';
+    }
+
+
+    $this->callDoctrineCli('dbal:run-sql', $args);
   }
 }

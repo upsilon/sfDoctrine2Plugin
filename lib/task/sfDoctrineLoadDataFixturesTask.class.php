@@ -54,16 +54,16 @@ EOF;
    */
   protected function execute($arguments = array(), $options = array())
   {
-    $this->databaseManager = new sfDatabaseManager($this->configuration);
+    $databaseManager = $this->initDBM();
 
     if (!$options['append'])
     {
-      $names = $this->databaseManager->getNames();
+      $names = $databaseManager->getNames();
 
       $entityManagers = array();
       foreach ($names as $name)
       {
-        $metadatas = $this->databaseManager
+        $metadatas = $databaseManager
           ->getDatabase($name)
           ->getEntityManager()
           ->getMetadataFactory()
@@ -79,7 +79,7 @@ EOF;
       }
       foreach ($entityManagers as $name => $classes)
       {
-        $em = $this->databaseManager->getDatabase($name)->getEntityManager();
+        $em = $databaseManager->getDatabase($name)->getEntityManager();
         $cmf = $em->getMetadataFactory();
         $classes = $this->getCommitOrder($em, $classes);
         for ($i = count($classes) - 1; $i >= 0; --$i)

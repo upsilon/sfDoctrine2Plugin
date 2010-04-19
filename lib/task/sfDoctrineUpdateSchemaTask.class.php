@@ -51,17 +51,9 @@ EOF;
    */
   protected function execute($arguments = array(), $options = array())
   {
-    $keys = array('dump-sql', 'update');
-    $options['update'] = true;
+    $keys = array('dump-sql');
     $args = $this->prepareDoctrineCliArguments($options, $keys);
 
-    $retval = $this->callDoctrineCli('Orm:schema-tool', $args);
-
-    if ($retval === true)
-    {
-      return 0;
-    }
-
-    return 1;
+    return $this->callDoctrineCli('orm:schema-tool:update', $args);
   }
 }

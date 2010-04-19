@@ -50,6 +50,6 @@ EOF;
    */
   protected function execute($arguments = array(), $options = array())
   {
-    $this->callDoctrineCli('Orm:generate-proxies');
+    $this->callDoctrineCli('orm:generate-proxies');
   }
 }

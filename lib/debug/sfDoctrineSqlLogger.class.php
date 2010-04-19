@@ -1,6 +1,6 @@
 <?php
 
-class sfDoctrineSqlLogger implements Doctrine\DBAL\Logging\SqlLogger
+class sfDoctrineSqlLogger implements Doctrine\DBAL\Logging\SQLLogger
 {
   protected $dispatcher;
 
@@ -25,7 +25,11 @@ class sfDoctrineSqlLogger implements Doctrine\DBAL\Logging\SqlLogger
   {
     foreach ((array) $params as $key => $param)
     {
-      if (strlen($param) >= 255)
+      if (is_object($param))
+      {
+        $params[$key] = "(Object, " . get_class($param) . ")";
+      }
+      elseif (strlen($param) >= 255)
       {
         $params[$key] = '['.number_format(strlen($param) / 1024, 2).'Kb]';
       }
