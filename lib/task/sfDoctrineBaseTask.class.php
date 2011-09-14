@@ -48,12 +48,12 @@ abstract class sfDoctrineBaseTask extends sfBaseTask
 
   protected function getCli()
   {
-    $helperSet = new \Symfony\Components\Console\Helper\HelperSet(array(
+    $helperSet = new \Symfony\Component\Console\Helper\HelperSet(array(
         'em' => new \Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper($this->getEntityManager()),
         'db' => new \Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper($this->getEntityManager()->getConnection()),
     ));
 
-    $cli = new \Symfony\Components\Console\Application('Doctrine Command Line Interface', Doctrine\Common\Version::VERSION);
+    $cli = new \Symfony\Component\Console\Application('Doctrine Command Line Interface', Doctrine\Common\Version::VERSION);
     $cli->setCatchExceptions(false);
     $cli->setAutoExit(false);
     $cli->setHelperSet($helperSet);
@@ -88,10 +88,10 @@ abstract class sfDoctrineBaseTask extends sfBaseTask
     $args = array($task);
     $args = array_merge($args, $arguments);
 
-    $input = new \Symfony\Components\Console\Input\StringInput(join(" ", $args));
+    $input = new \Symfony\Component\Console\Input\StringInput(join(" ", $args));
 
     $output = new sfDoctrineCliPrinter();
-    $output->setFormatter($this->formatter);
+    $output->setSymfonyFormatter($this->formatter);
     $output->setDispatcher($this->dispatcher);
 
     $cli = $this->getCli();
