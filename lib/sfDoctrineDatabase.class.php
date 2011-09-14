@@ -10,7 +10,7 @@
  */
 
 use \Doctrine\ORM\Mapping\Driver\YamlDriver,
-    \DoctrineExtensions\ActiveEntity;
+    \DoctrineExtensions\ActiveEntity\ActiveEntity;
 
 /**
  * Represents a single Symfony Doctrine Database connection
@@ -78,7 +78,7 @@ class sfDoctrineDatabase extends sfDatabase
       $configuration->$method($config);
     }
 
-    $this->em = \Doctrine\ORM\EntityManager::create($connectionOptions, $config);
+    $this->em = \DoctrineExtensions\ActiveEntity\ActiveEntityManager::create($connectionOptions, $config);
 
     if (method_exists($configuration, 'configureEntityManager'))
     {

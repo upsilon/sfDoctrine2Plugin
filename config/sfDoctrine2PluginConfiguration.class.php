@@ -39,7 +39,7 @@ class sfDoctrine2PluginConfiguration extends sfPluginConfiguration
     require_once __DIR__.'/../lib/vendor/doctrine/Doctrine/Common/ClassLoader.php';
 
     $classLoader = new \Doctrine\Common\ClassLoader('DoctrineExtensions');
-    $classLoader->setIncludePath(__DIR__.'/../lib/vendor/active_entity');
+    $classLoader->setIncludePath(__DIR__.'/../lib/vendor/active_entity/lib');
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader('Doctrine');
