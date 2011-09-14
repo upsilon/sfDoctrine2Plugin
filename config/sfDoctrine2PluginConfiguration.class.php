@@ -36,18 +36,11 @@ class sfDoctrine2PluginConfiguration extends sfPluginConfiguration
       $this->dispatcher->connect('debug.web.load_panels', array('sfWebDebugPanelDoctrine', 'listenToAddPanelEvent'));
     }
 
-    require_once __DIR__.'/../lib/vendor/doctrine/Doctrine/Common/ClassLoader.php';
+    require_once __DIR__.'/../lib/vendor/doctrine/lib/Doctrine/ORM/Tools/Setup.php';
+    Doctrine\ORM\Tools\Setup::registerAutoloadGit(__DIR__.'/../lib/vendor/doctrine');
 
     $classLoader = new \Doctrine\Common\ClassLoader('DoctrineExtensions');
     $classLoader->setIncludePath(__DIR__.'/../lib/vendor/active_entity/lib');
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader('Doctrine');
-    $classLoader->setIncludePath(__DIR__.'/../lib/vendor/doctrine');
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader('Symfony');
-    $classLoader->setIncludePath(__DIR__.'/../lib/vendor');
     $classLoader->register();
 
     $this->dispatcher->connect('component.method_not_found', array($this, 'componentMethodNotFound'));
