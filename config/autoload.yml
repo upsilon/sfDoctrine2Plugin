@@ -1,0 +1,5 @@
+autoload:
+  sfDoctrine2Plugin_lib:
+    path:           <?php echo realpath(dirname(__FILE__).'/../lib')."\n" ?>
+    recursive:      true
+    exclude:        [vendor]
