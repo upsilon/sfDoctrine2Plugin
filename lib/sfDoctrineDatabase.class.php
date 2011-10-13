@@ -44,7 +44,7 @@ class sfDoctrineDatabase extends sfDatabase
       $paths[] = $schema;
     }
 
-    $paths[] = realpath(__DIR__ . '/../config/doctrine');
+    $paths[] = realpath(__DIR__ . '/../lib/entities/doctrine');
 
     $enabledPlugins = $configuration->getPlugins();
     foreach ($configuration->getAllPluginPaths() as $plugin => $path)
@@ -53,11 +53,11 @@ class sfDoctrineDatabase extends sfDatabase
       {
         continue;
       }
-      $paths[] = $path.'/config/doctrine';
+      $paths[] = $path.'/lib/entities/doctrine';
     }
     $paths = array_unique($paths);
 
-    $config->setMetadataDriverImpl(new YamlDriver($paths));
+    $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver($paths));
     $config->setProxyDir(sfConfig::get('sf_lib_dir') . '/Proxies');
     $config->setProxyNamespace('Proxies');
 
