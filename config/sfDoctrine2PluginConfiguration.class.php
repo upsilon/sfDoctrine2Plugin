@@ -44,6 +44,7 @@ class sfDoctrine2PluginConfiguration extends sfPluginConfiguration
     $classLoader->register();
 
     $this->dispatcher->connect('component.method_not_found', array($this, 'componentMethodNotFound'));
+    $this->dispatcher->connect('context.method_not_found', array($this, 'contextMethodNotFound'));
   }
 
   public function componentMethodNotFound(sfEvent $event)
@@ -52,74 +53,94 @@ class sfDoctrine2PluginConfiguration extends sfPluginConfiguration
     $method = $event['method'];
     $args = $event['arguments'];
 
-    if ($method == 'getEntityManager')
+    if ($method == 'getEntityManager' || $method == 'getEntityManagerFor' || $method == 'getMetadataFor')
     {
-      $databaseManager = $actions->getContext()->getDatabaseManager();
-      $names = $databaseManager->getNames();
-      if ($args)
-      {
-        $name = $args[0];
-        if (!in_array($name, $names))
-        {
-          throw new sfException(
-            sprintf('Could not get the entity manager for '.
-                    'the database connection named: "%s"', $name)
-          );
-        }
-        $database = $databaseManager->getDatabase($args[0]);
-      } else {
-        $database = $databaseManager->getDatabase(end($names));
-      }
-
-      $event->setReturnValue($database->getEntityManager());
-
+      array_unshift($args, $actions->getContext());
+      $result = call_user_func_array(array(__CLASS__, $method), $args);
+      $event->setReturnValue($result);
       return true;
     }
-    else if ($method == 'getEntityManagerFor')
+
+    return false;
+  }
+
+  public function contextMethodNotFound(sfEvent $event)
+  {
+    $context = $event->getSubject();
+    $method = $event['method'];
+    $args = $event['arguments'];
+
+    if ($method == 'getEntityManager' || $method == 'getEntityManagerFor' || $method == 'getMetadataFor')
     {
-      $entityName = $args[0];
-      if (is_object($entityName))
-      {
-        $entityName = get_class($entityName);
-      }
-      $databaseManager = $actions->getContext()->getDatabaseManager();
-      $names = $databaseManager->getNames();
-      foreach ($names as $name)
-      {
-        $em = $databaseManager->getDatabase($name)->getEntityManager();
-        $cmf = $em->getMetadataFactory();
-        if ($cmf->hasMetadataFor($entityName))
-        {
-          $event->setReturnValue($em);
-          return true;
-        }
-      }
-      return false;
+      array_unshift($args, $context);
+      $result = call_user_func_array(array(__CLASS__, $method), $args);
+      $event->setReturnValue($result);
+      return true;
     }
-    else if ($method == 'getMetadataFor')
+
+    return false;
+  }
+
+  static protected function getEntityManager(sfContext $context, $name = null)
+  {
+    $databaseManager = $context->getDatabaseManager();
+    $names = $databaseManager->getNames();
+    if ($name)
     {
-      $entityName = $args[0];
-      if (is_object($entityName))
+      if (!in_array($name, $names))
       {
-        $entityName = get_class($entityName);
+        throw new sfException(
+          sprintf('Could not get the entity manager for '.
+                  'the database connection named: "%s"', $name)
+        );
       }
-      $databaseManager = $actions->getContext()->getDatabaseManager();
-      $names = $databaseManager->getNames();
-      foreach ($names as $name)
-      {
-        $em = $databaseManager->getDatabase($name)->getEntityManager();
-        $cmf = $em->getMetadataFactory();
-        if ($cmf->hasMetadataFor($entityName))
-        {
-          $event->setReturnValue($cmf->getMetadataFor($entityName));
-          return true;
-        }
-      }
-      return false;
+      $database = $databaseManager->getDatabase($name);
+    } else {
+      $database = $databaseManager->getDatabase(end($names));
     }
-    else
+
+    return $database->getEntityManager();
+  }
+
+  static protected function getEntityManagerFor(sfContext $context, $entityName)
+  {
+    if (is_object($entityName))
     {
-      return false;
+      $entityName = get_class($entityName);
     }
+    $databaseManager = $context->getDatabaseManager();
+    $names = $databaseManager->getNames();
+    foreach ($names as $name)
+    {
+      $em = $databaseManager->getDatabase($name)->getEntityManager();
+      $cmf = $em->getMetadataFactory();
+      if ($cmf->hasMetadataFor($entityName))
+      {
+        return $em;
+      }
+    }
+
+    return null;
+  }
+
+  static protected function getMetadataFor(sfContect $context, $entityName)
+  {
+    if (is_object($entityName))
+    {
+      $entityName = get_class($entityName);
+    }
+    $databaseManager = $context->getDatabaseManager();
+    $names = $databaseManager->getNames();
+    foreach ($names as $name)
+    {
+      $em = $databaseManager->getDatabase($name)->getEntityManager();
+      $cmf = $em->getMetadataFactory();
+      if ($cmf->hasMetadataFor($entityName))
+      {
+        return $cmf->getMetadataFor($entityName);
+      }
+    }
+
+    return null;
   }
 }
