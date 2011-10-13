@@ -1,8 +1,8 @@
 <?php
 
-use DoctrineExtensions\ActiveEntity;
+use DoctrineExtensions\ActiveEntity\ActiveEntity;
 
-abstract class sfDoctrineActiveEntity extends \DoctrineExtensions\ActiveEntity
+abstract class sfDoctrineActiveEntity extends ActiveEntity
 {
   public function isNew()
   {
