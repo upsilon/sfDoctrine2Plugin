@@ -34,7 +34,18 @@ class sfDoctrineDatabase extends sfDatabase
     $plugins = (array) $this->getParameter('plugins');
 
     $config = new \Doctrine\ORM\Configuration();
-    $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
+
+    if (sfConfig::get('sf_debug'))
+    {
+      $cache = new \Doctrine\Common\Cache\ArrayCache;
+    }
+    else
+    {
+      $cache = new \Doctrine\Common\Cache\ApcCache;
+    }
+
+    $config->setMetadataCacheImpl($cache);
+    $config->setQueryCacheImpl($cache);
 
     $configuration = sfProjectConfiguration::getActive();
 
@@ -60,6 +71,15 @@ class sfDoctrineDatabase extends sfDatabase
     $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver($paths));
     $config->setProxyDir(sfConfig::get('sf_lib_dir') . '/Proxies');
     $config->setProxyNamespace('Proxies');
+
+    if (sfConfig::get('sf_debug'))
+    {
+      $config->setAutoGenerateProxyClasses(true);
+    }
+    else
+    {
+      $config->setAutoGenerateProxyClasses(false);
+    }
 
     $configuration = sfProjectConfiguration::getActive();
 
